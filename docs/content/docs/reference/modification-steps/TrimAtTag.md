@@ -21,4 +21,5 @@ and `keep_tag` determines whether the tag sequence itself is retained.
 
 Only extracted regions with exactly one hit are supported.
 
-Has an implicit `if_tag` based on it's in_label
+Has an implicit `if_tag` based on it's in_label, so reads that do not have the tag 
+are not modified by `TrimAtTag`.
