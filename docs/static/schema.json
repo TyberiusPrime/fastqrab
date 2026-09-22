@@ -4252,6 +4252,9 @@
         "search": {
           "$ref": "#/$defs/StringOrVecString"
         },
+        "queries": {
+          "$ref": "#/$defs/StringOrVecString"
+        },
         "query": {
           "$ref": "#/$defs/StringOrVecString"
         },

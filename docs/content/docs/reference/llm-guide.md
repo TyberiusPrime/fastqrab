@@ -95,7 +95,7 @@ Find and trim 3' adapters using partial matching.
 [[step]]
     action = 'ExtractIUPACSuffix'
     segment = 'read1'
-    query = 'AGATCGGAAGAGC'
+    queries = ['AGATCGGAAGAGC']
     min_length = 3
     max_mismatches = 1
     out_label = 'adapter'
@@ -381,14 +381,14 @@ Extract multiple fixed position regions (concatenated).
 
 Find IUPAC pattern with mismatches (substitutions only, no indels).
 
-**USE WHEN**: Searching for adapter/motif with mismatches
+**USE WHEN**: Searching for adapters/motifs with mismatches
 **IUPAC CODES**: N=any, R=A/G, Y=C/T, S=G/C, W=A/T, K=G/T, M=A/C, B=C/G/T, D=A/G/T, H=A/C/T, V=A/C/G
 
 ```toml
 [[step]]
     action = 'ExtractIUPAC'
     segment = 'read1'              # TYPE: segment name, REQUIRED
-    search = 'CTNNGG'              # TYPE: IUPAC string, REQUIRED
+    search = 'CTNNGG'              # TYPE: (list of)  IUPAC string (same length), REQUIRED
     max_mismatches = 1             # TYPE: usize, REQUIRED
     anchor = 'Anywhere'            # TYPE: 'Left'|'Right'|'Anywhere', REQUIRED
     # max_anchor_distance = 0        # Type: usize, OPTIONAL, Default = 0. Allow hit in the first/last n bp if anchor != Anywhere. Must not be set if anchor = anywhere.
@@ -411,7 +411,7 @@ Find IUPAC pattern allowing insertions/deletions.
 [[step]]
     action = 'ExtractIUPACWithIndel'
     segment = 'read1'              # TYPE: segment name, REQUIRED
-    search = 'CTNNGG'              # TYPE: IUPAC string, REQUIRED
+    search = 'CTNNGG'              # TYPE: IUPAC string (same length), REQUIRED
     max_mismatches = 1             # TYPE: usize, REQUIRED
     max_indel_bases = 1            # TYPE: usize, REQUIRED
     anchor = 'Anywhere'            # TYPE: 'Left'|'Right'|'Anywhere', REQUIRED
@@ -429,7 +429,7 @@ Trim adapter at end with partial matching.
 [[step]]
     action = 'ExtractIUPACSuffix'
     segment = 'read1'              # TYPE: segment name, DEFAULT: 'read1'
-    query = 'AGATCGGAAGAGC'        # TYPE: DNA string (AGTCN only), REQUIRED
+    query = 'AGATCGGAAGAGC'        # TYPE: (list of) IUPAC string , REQUIRED
     min_length = 3                 # TYPE: usize, REQUIRED, min bases to match
     max_mismatches = 1             # TYPE: usize, REQUIRED
     out_label = 'adapter'          # TYPE: string, REQUIRED

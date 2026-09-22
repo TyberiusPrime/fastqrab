@@ -128,7 +128,7 @@
 # [[step]]
 #    action = "ExtractIUPACSuffix"
 #    out_label = "mytag"
-#    search = "AGTCA"  # the adapter to trim. Straigth bases only, no IUPAC.
+#    search = "AGTCA"  # the adapter to trim. IUPAC supported. Maybe a list of multiple (same length)
 #    segment = "read1"   # Any of your input segments (default: read1)
 #    min_length = 3     # uint, the minimum length of match between the end of the read and
 #                       # the start of the adapter

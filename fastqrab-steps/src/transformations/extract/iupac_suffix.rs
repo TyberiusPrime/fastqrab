@@ -15,6 +15,7 @@ pub struct IUPACSuffix {
     pub min_length: usize,
     pub max_mismatches: usize,
     #[tpd(with = "tpd_adapt_iupac_bstring")]
+    #[tpd(alias = "queries")]
     #[tpd(alias = "query")]
     #[tpd(alias = "pattern")]
     #[schemars(with = "StringOrVecString")]
