@@ -20,7 +20,12 @@ mod common;
 /// Runs `__decompressor <input> --landlock-probe-{read,write} <target>` and
 /// returns the trimmed `PROBE_*` line it printed. `stdin` feeds the child's
 /// stdin when `input` is `-`; pass `None` when `input` is a real file.
-fn probe(flag: &str, input: &std::path::Path, target: &std::path::Path, stdin: Option<&[u8]>) -> String {
+fn probe(
+    flag: &str,
+    input: &std::path::Path,
+    target: &std::path::Path,
+    stdin: Option<&[u8]>,
+) -> String {
     let mut child = Command::new(common::decompressor())
         .arg("__decompressor")
         .arg(input)

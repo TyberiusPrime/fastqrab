@@ -104,7 +104,7 @@ fn correct_umis_to_next_by_hamming(
     umis.sort_unstable();
     let mut corrections = FxIndexMap::default();
     // `==` vs `!=` is equivalent here: chunk_by always partitions the whole slice into
-    // exactly one chunk per gene regardless of the 'sign' of the predicate, 
+    // exactly one chunk per gene regardless of the 'sign' of the predicate,
     for gene_chunk in umis.chunk_by(|((gene, _), _), ((b_gene, _), _)| gene == b_gene) {
         //mutants::skip
         for &(x, x_count) in gene_chunk {

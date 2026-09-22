@@ -1,0 +1,27 @@
+[input]
+    read1 = 'input_read1.fq'
+
+[[step]]
+    action = 'ExtractIUPACSuffix'
+	out_label = 'hit'
+    query = [
+        'NRTCGGAAGAGCACACGTCTGAACTCCAGTCAC',
+        'GTCACTCAGGAATCTCGTATGCCGTCTTCTGCT']
+    min_length = 12
+    max_mismatches = 0
+[[step]]
+	action = 'TrimAtTag'
+	in_label = 'hit'
+    direction = 'end'
+    keep_tag = false
+
+
+[[step]]
+    action = 'StoreTagsInTable'
+    infix = "table"
+[output]
+    prefix = "output"
+
+# --- Output steps (migrated from [output]) ---
+[[step]]
+    action = "OutputFASTQ"

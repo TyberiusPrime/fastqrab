@@ -1,6 +1,6 @@
 use super::extract_region_tags_from_seq;
 use crate::transformations::prelude::*;
-use fastqrab_config::{dna::iupac_hamming_distance, tpd_adapt_iupac_bstring};
+use fastqrab_config::{StringOrVecString, dna::iupac_hamming_distance, tpd_adapt_iupac_bstring};
 
 /// Extract a IUPAC sequence (or a prefix of it) at the end of a read into a tag.
 #[derive(Clone, JsonSchema)]
@@ -15,10 +15,10 @@ pub struct IUPACSuffix {
     pub min_length: usize,
     pub max_mismatches: usize,
     #[tpd(with = "tpd_adapt_iupac_bstring")]
-    #[schemars(with = "String")]
     #[tpd(alias = "query")]
     #[tpd(alias = "pattern")]
-    pub search: BString,
+    #[schemars(with = "StringOrVecString")]
+    search: Vec<BString>,
 }
 
 impl VerifyIn<PartialConfig> for PartialIUPACSuffix {
@@ -32,6 +32,27 @@ impl VerifyIn<PartialConfig> for PartialIUPACSuffix {
     {
         self.segment.validate_segment(parent);
         let ml_span = self.min_length.span();
+        self.search.verify(|v| {
+            if v.is_empty() {
+                Err(ValidationFailure::new(
+                    "Search must not be an empty list",
+                    Some("Fill in at least one search pattern"),
+                ))
+            } else {
+                let lengths: Vec<usize> = v
+                    .iter()
+                    .map(|x| x.as_ref().map_or(0, |y| y.len()))
+                    .collect();
+                if lengths.iter().any(|x| *x != lengths[0]) {
+                    Err(ValidationFailure::new(
+                        "Search patterns must all be of the same length".to_string(),
+                        Some(format!("Observed: {:?}", lengths)),
+                    ))
+                } else {
+                    Ok(())
+                }
+            }
+        });
         self.min_length.verify(|v| {
             if *v == 0 {
                 Err(ValidationFailure::new(
@@ -40,7 +61,12 @@ impl VerifyIn<PartialConfig> for PartialIUPACSuffix {
                 ))
             } else {
                 if let Some(search) = self.search.as_ref()
-                    && *v > search.len()
+                    && *v
+                        > search
+                            .iter()
+                            .map(|y| y.as_ref().map(|z| z.len()).unwrap_or(0))
+                            .min()
+                            .unwrap_or(0)
                 {
                     let spans = vec![
                         (
@@ -79,6 +105,38 @@ impl IUPACSuffix {
             }
         }
         None
+    }
+    fn longest_suffix_that_is_a_prefix_multiple(
+        seq: &[u8],
+        queries: &[BString],
+        max_mismatches: usize,
+        min_length: usize,
+    ) -> Option<usize> {
+        let mut best = None;
+        for query in queries {
+            let here = IUPACSuffix::longest_suffix_that_is_a_prefix(
+                seq,
+                query,
+                max_mismatches,
+                min_length,
+            );
+            if here > best {
+                best = here;
+            }
+            // match (best, here) {
+            //             (None, here) => here,
+            //             (Some(old_prefix_len), None) => Some(old_prefix_len),
+            //              Some(old_prefix_len), Some(new_prefix_len) => {
+            //                 if new_prefix_len > old_prefix_len {
+            //                     Some(new_prefix_len)
+            //                 } else {
+            //                     Some(old_prefix_len)
+            //                 }
+            //         }
+            //
+            //     }
+        }
+        best
     }
 }
 
@@ -120,7 +178,7 @@ impl Step for IUPACSuffix {
                 clippy::cast_possible_truncation,
                 reason = "lengths are guaranteed to be within u32 range"
             )]
-            Self::longest_suffix_that_is_a_prefix(
+            Self::longest_suffix_that_is_a_prefix_multiple(
                 seq,
                 &self.search,
                 self.max_mismatches,

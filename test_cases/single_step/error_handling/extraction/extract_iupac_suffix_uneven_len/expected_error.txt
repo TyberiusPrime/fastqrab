@@ -1,0 +1,21 @@
+Error Details ==
+Error 1/1
+  ╭─config.toml
+  ┆
+3 │ [[step]]
+4 │     action = 'ExtractIUPACSuffix'
+  ┆              ──────────┬─────────
+  ┆                        │
+  ┆                        ╰────────── In this step
+  ┆
+5 │ 	out_label = "label"
+6 │     query = ['AAA','GNNN', 'GCT']
+  ┆             ──────────┬──────────
+  ┆                       │
+  ┆                       ╰─────────── Search patterns must all be of the same length
+──╯
+Hint: Observed: [3, 4, 3]
+      See https://doc_url.example/version-stripped-from-test/docs/redirects/ExtractIUPACSuffix
+      Or run: `fastqrab template ExtractIUPACSuffix` for more information.
+
+

@@ -1626,7 +1626,7 @@
               "minimum": 0
             },
             "search": {
-              "type": "string"
+              "$ref": "#/$defs/StringOrVecString"
             },
             "action": {
               "type": "string",
@@ -4250,13 +4250,13 @@
           "minimum": 0
         },
         "search": {
-          "type": "string"
+          "$ref": "#/$defs/StringOrVecString"
         },
         "query": {
-          "type": "string"
+          "$ref": "#/$defs/StringOrVecString"
         },
         "pattern": {
-          "type": "string"
+          "$ref": "#/$defs/StringOrVecString"
         }
       },
       "required": [

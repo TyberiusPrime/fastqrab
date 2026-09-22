@@ -1,0 +1,18 @@
+[input]
+    read1 = 'sample_data/ten_reads.fq'
+[[step]]
+    action = 'ExtractIUPACSuffix'
+	out_label = "label"
+    query = []
+    min_length = 6
+    max_mismatches = 3
+
+[[step]]
+  action = 'forgetalltags'
+
+[output]
+    prefix = "output"
+
+# --- Output steps (migrated from [output]) ---
+[[step]]
+    action = "OutputFASTQ"

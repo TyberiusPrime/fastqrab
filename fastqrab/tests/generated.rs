@@ -5698,6 +5698,21 @@ fn test_cases_x_single_step_x_error_handling_x_extraction_x_extract_iupac_no_seg
 
 #[test]
 
+fn test_cases_x_single_step_x_error_handling_x_extraction_x_extract_iupac_suffix_empty_search() {
+    println!(
+        "Test case is in: test_cases/single_step/error_handling/extraction/extract_iupac_suffix_empty_search"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/error_handling/extraction/extract_iupac_suffix_empty_search",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
 fn test_cases_x_single_step_x_error_handling_x_extraction_x_extract_iupac_suffix_min_length_too_high()
  {
     println!(
@@ -5738,6 +5753,21 @@ fn test_cases_x_single_step_x_error_handling_x_extraction_x_extract_iupac_suffix
     run_test(
         std::path::Path::new(
             "../test_cases/single_step/error_handling/extraction/extract_iupac_suffix_too_many_mismatches",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_error_handling_x_extraction_x_extract_iupac_suffix_uneven_len() {
+    println!(
+        "Test case is in: test_cases/single_step/error_handling/extraction/extract_iupac_suffix_uneven_len"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/error_handling/extraction/extract_iupac_suffix_uneven_len",
         ),
         "input.toml",
         1,
@@ -8531,6 +8561,21 @@ fn test_cases_x_single_step_x_extraction_x_extract_iupac_x_suffix_and_cut() {
     println!("Test case is in: test_cases/single_step/extraction/extract_iupac/suffix_and_cut");
     run_test(
         std::path::Path::new("../test_cases/single_step/extraction/extract_iupac/suffix_and_cut"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_extraction_x_extract_iupac_x_suffix_multiple_using_iupac() {
+    println!(
+        "Test case is in: test_cases/single_step/extraction/extract_iupac/suffix_multiple_using_iupac"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/extraction/extract_iupac/suffix_multiple_using_iupac",
+        ),
         "input.toml",
         1,
     );

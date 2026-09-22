@@ -109,7 +109,14 @@ pub fn run() -> Result<()> {
     if let Some(probe) = args.landlock_probe_read.as_deref() {
         //mutants::skip - test-only hook, exercised directly by its own tests
         let ok = std::fs::File::open(probe).is_ok();
-        println!("{}", if ok { "PROBE_READ_OK" } else { "PROBE_READ_DENIED" });
+        println!(
+            "{}",
+            if ok {
+                "PROBE_READ_OK"
+            } else {
+                "PROBE_READ_DENIED"
+            }
+        );
         return Ok(());
     }
     if let Some(probe) = args.landlock_probe_write.as_deref() {
@@ -117,7 +124,11 @@ pub fn run() -> Result<()> {
         let ok = std::fs::File::create(probe).is_ok();
         println!(
             "{}",
-            if ok { "PROBE_WRITE_OK" } else { "PROBE_WRITE_DENIED" }
+            if ok {
+                "PROBE_WRITE_OK"
+            } else {
+                "PROBE_WRITE_DENIED"
+            }
         );
         return Ok(());
     }
@@ -452,8 +463,8 @@ fn write_descriptor(out: &mut impl Write, slot: u32, len: u32) -> std::io::Resul
 #[mutants::skip] // landlock is best effort.
 fn apply_landlock(input: &std::path::Path) -> Result<()> {
     use landlock::{
-        ABI, Access, AccessFs, BitFlags, PathBeneath, PathFd, Ruleset, RulesetAttr,
-        RulesetCreated, RulesetCreatedAttr,
+        ABI, Access, AccessFs, BitFlags, PathBeneath, PathFd, Ruleset, RulesetAttr, RulesetCreated,
+        RulesetCreatedAttr,
     };
 
     let abi = ABI::V1;
