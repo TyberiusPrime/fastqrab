@@ -391,6 +391,7 @@ pub enum Transformation {
     // //store
     ConcatTags(tag::ConcatTags),
     FillMissing(tag::FillMissing),
+    PickTag(tag::PickTag),
     ForgetAllTags(tag::ForgetAllTags),
     ForgetTag(tag::ForgetTag),
     #[tpd(alias = "StoreTagsInComment")]

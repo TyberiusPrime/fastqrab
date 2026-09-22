@@ -1,0 +1,2 @@
+Hint: This transform requires tag 'str_tag_a' to be one of the following types: ['Location', 'Numeric'],
+      but it is actually of type 'String'.

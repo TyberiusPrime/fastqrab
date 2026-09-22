@@ -1,0 +1,33 @@
+[input]
+    read1 = 'input_read1.fq'
+
+# Two String tags (both extracted from the read name, always present)
+[[step]]
+    action = 'ExtractRegex'
+    search = 'read\d{2,}'
+    out_label = 'str_tag_a'
+    source = 'name:read1'
+
+[[step]]
+    action = 'ExtractRegex'
+    search = '\d{2,}'
+    out_label = 'str_tag_b'
+    source = 'name:read1'
+
+# 'largest' only accepts Location or Numeric tags - String is rejected
+[[step]]
+    action = 'PickTag'
+    in_labels = ['str_tag_a', 'str_tag_b']
+    out_label = 'result'
+    policy = 'largest'
+
+[[step]]
+    action = 'StoreTagInComment'
+    in_label = 'result'
+
+[output]
+    prefix = "output"
+
+# --- Output steps (migrated from [output]) ---
+[[step]]
+    action = "OutputFASTQ"

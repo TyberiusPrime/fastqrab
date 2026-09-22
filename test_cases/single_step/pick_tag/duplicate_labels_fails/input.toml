@@ -1,0 +1,26 @@
+[input]
+    read1 = 'input_read1.fq'
+
+[[step]]
+    action = 'ExtractIUPAC'
+    search = "AAAA"
+    out_label = 'tag1'
+    anchor = 'Left'
+    max_mismatches = 0
+
+[[step]]
+    action = 'PickTag'
+    in_labels = ['tag1', 'tag1']
+    out_label = 'result'
+    policy = 'first_available'
+
+[[step]]
+    action = 'StoreTagInComment'
+    in_label = 'result'
+
+[output]
+    prefix = "output"
+
+# --- Output steps (migrated from [output]) ---
+[[step]]
+    action = "OutputFASTQ"

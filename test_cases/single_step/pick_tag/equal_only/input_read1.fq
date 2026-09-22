@@ -1,0 +1,12 @@
+@read1_equal
+GGGGAAAA
++
+IIIIIIII
+@read2_present_but_differ
+TTTTGGGG
++
+IIIIIIII
+@read3_one_missing
+TTTTCCCC
++
+IIIIIIII

@@ -1,0 +1,6 @@
+13 │     in_labels = ['tag1', 'tag1']
+   ┆                  ───┬──  ───┬──
+   ┆                     │       │
+   ┆                     ╰──────────── First occurrence
+   ┆                             │
+   ┆                             ╰──── Duplicate input label

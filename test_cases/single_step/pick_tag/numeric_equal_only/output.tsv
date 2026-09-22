@@ -1,0 +1,3 @@
+ReadName	count_tag	length_tag	result
+read1_all_a	4	4	4
+read2_not_all_a	3	4	NaN

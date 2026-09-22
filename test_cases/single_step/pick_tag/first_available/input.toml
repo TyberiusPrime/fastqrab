@@ -1,0 +1,36 @@
+[input]
+    read1 = 'input_read1.fq'
+
+# Tag 'a': matches AAAA at start (only read1)
+[[step]]
+    action = 'ExtractIUPAC'
+    search = "AAAA"
+    out_label = 'a'
+    anchor = 'Left'
+    max_mismatches = 0
+
+# Tag 'b': matches TTTT at end (read1 and read2)
+[[step]]
+    action = 'ExtractIUPAC'
+    search = "TTTT"
+    out_label = 'b'
+    anchor = 'Right'
+    max_mismatches = 0
+
+# PickTag: pick the left-most (first in in_labels) tag with a value
+[[step]]
+    action = 'PickTag'
+    in_labels = ['a', 'b']
+    out_label = 'result'
+    policy = 'first_available'
+
+[[step]]
+    action = 'StoreTagInComment'
+    in_label = ['result', 'location_result']
+
+[output]
+    prefix = "output"
+
+# --- Output steps (migrated from [output]) ---
+[[step]]
+    action = "OutputFASTQ"

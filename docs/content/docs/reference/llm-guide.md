@@ -1740,6 +1740,72 @@ Return the first tag if it is not missing, otherwise return the second tag.
 - **Both String**: output is String
 - **Location + String mixture**: output is String (Location values converted to their sequence)
 
+### PickTag
+
+Pick one value out of several tags per read, according to a policy.
+
+**USE WHEN**: Choosing between several candidate tags (e.g. barcodes found by
+different extraction strategies) with a single, explicit rule
+
+```toml
+[[step]]
+    action = "PickTag"
+    in_labels = ["mytag", "mytag2"] # TYPE: array of existing tags, REQUIRED (min 2, all the same type)
+    out_label = "result"            # TYPE: string, REQUIRED
+    policy = "first_available"      # TYPE: 'first_available'|'equal_only'|'largest'|'smallest'|'left_most_region', REQUIRED
+```
+
+**Validation**: Every tag in `in_labels` must have the same tag type (Location,
+String or Numeric; Bool tags are not supported) - PickTag does not convert
+between types the way `ConcatTags`/`FillMissing` do.
+
+**policy VALUES**:
+- `first_available`: the left-most tag (in `in_labels`) that has a value for
+  that read. Location, String or Numeric tags only (Numeric tags use `NaN` as
+  their "missing" value).
+- `equal_only`: a value, but only when every input tag agrees for that read;
+  otherwise the output is missing. Location, String or Numeric tags only:
+  - Location / String: compares the extracted text.
+  - Numeric: compares the values; disagreement outputs `NaN`.
+- `largest`: Location or Numeric tags only. The tag with the largest measure
+  for that read - for Location tags, the sum of that tag's region lengths;
+  for Numeric tags, the value itself.
+- `smallest`: the inverse of `largest` - the tag with the smallest measure.
+- `left_most_region`: Location tags only. The tag whose first region starts
+  earliest, comparing `(segment, start coordinate)` tuples - so this also
+  picks between tags living on different segments.
+
+**Example Usage**:
+```toml
+# Prefer a barcode found at the start of read1, falling back to one found
+# anywhere in read2.
+[[step]]
+    action = "ExtractIUPAC"
+    segment = "read1"
+    search = "AAAA"
+    out_label = "barcode1"
+    anchor = "Left"
+    max_mismatches = 0
+
+[[step]]
+    action = "ExtractIUPAC"
+    segment = "read2"
+    search = "TTTT"
+    out_label = "barcode2"
+    anchor = "Anywhere"
+    max_mismatches = 0
+
+[[step]]
+    action = "PickTag"
+    in_labels = ["barcode1", "barcode2"]
+    out_label = "barcode"
+    policy = "first_available"
+```
+
+If `barcode1`/`barcode2` live on different segments (as above), the output is
+a String tag (a single Location tag can only live on one segment); if all
+input tags share one segment, the output stays Location.
+
 ### ForgetTag
 
 Remove a tag from memory.

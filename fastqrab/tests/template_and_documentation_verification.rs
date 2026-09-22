@@ -193,7 +193,7 @@ const ACTIONS_REQUIRING_GENERIC_TAG: &[&str] = &[
     "OutputBAM",
 ];
 
-const ACTIONS_REQUIRING_TWO_TAGS: &[&str] = &["ConcatTags", "StoreTagInSequence"];
+const ACTIONS_REQUIRING_TWO_TAGS: &[&str] = &["ConcatTags", "StoreTagInSequence", "PickTag"];
 
 const TAG_DECLARING_CONVERT_STEPS: &[&str] = &["ConvertToRate", "ConvertRegionsToLength"];
 

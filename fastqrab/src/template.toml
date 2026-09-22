@@ -451,6 +451,51 @@
 #    in_label_secondary = "mytag2" # (alias: secondary, second) tag used as fallback
 #    out_label = "result"          # output tag name
 
+# ==== PickTag ====
+## Pick one value out of several tags per read, according to a policy.
+## Every tag in in_labels must have the same type (Location, String or Numeric; Bool is not supported).
+# [[step]]
+#    action = "PickTag"
+#    in_labels = ["mytag", "mytag2"] # tags to choose between, all the same type
+#    out_label = "result"            # output tag name
+#    policy = "first_available"      # "first_available" | "equal_only" | "largest" | "smallest" | "left_most_region"
+#
+# # policy behavior:
+# # - first_available: the left-most tag (in in_labels) that has a value.
+# #   Location, String or Numeric only (Numeric uses NaN as "missing").
+# # - equal_only: a value, but only if every input tag agrees; else missing.
+# #   Location/String compare their text; Numeric disagreement outputs NaN.
+# # - largest: Location or Numeric only. The tag with the largest measure -
+# #   region length sum for Location tags, or the value itself for Numeric tags.
+# # - smallest: the inverse of largest - the tag with the smallest measure.
+# # - left_most_region: Location tags only. The tag whose first region starts
+# #   earliest, comparing (segment, start) - so this also picks between tags
+# #   living on different segments.
+#
+# # Example: prefer a barcode found at the start of read1, falling back to one
+# # found anywhere in read2.
+# [[step]]
+#    action = "ExtractIUPAC"
+#    segment = "read1"
+#    search = "AAAA"
+#    out_label = "barcode1"
+#    anchor = "Left"
+#    max_mismatches = 0
+#
+# [[step]]
+#    action = "ExtractIUPAC"
+#    segment = "read2"
+#    search = "TTTT"
+#    out_label = "barcode2"
+#    anchor = "Anywhere"
+#    max_mismatches = 0
+#
+# [[step]]
+#    action = "PickTag"
+#    in_labels = ["barcode1", "barcode2"]
+#    out_label = "barcode"
+#    policy = "first_available"
+
 # ==== ForgetTag ====
 ## forget about a tag
 ## usefull if you want to store tags in a table,

@@ -1905,6 +1905,34 @@
           ]
         },
         {
+          "description": "Pick one value out of several tags per read, according to `policy`.\n\n# Examples\n\n```toml\n[[step]]\naction = \"PickTag\"\nin_labels = [\"barcode1\", \"barcode2\"]\nout_label = \"barcode\"\npolicy = \"first_available\"\n```",
+          "type": "object",
+          "properties": {
+            "in_labels": {
+              "description": "Input tag labels to choose between. Must all have the same tag type.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "out_label": {
+              "description": "Output tag label for the picked value.",
+              "type": "string"
+            },
+            "policy": {
+              "description": "The policy used to choose which tag's value to output for each read.\n- `first_available`: the left-most tag (in `in_labels`) that has a value.\n- `equal_only`: a value, but only if every input tag agrees; else missing.\n- `largest`: the tag with the largest measure (region length sum, or numeric value).\n- `smallest`: the tag with the smallest measure - the inverse of `largest`.\n- `left_most_region`: Location tags only - the tag starting earliest, comparing\n  `(segment, start)` across all input tags.",
+              "$ref": "#/$defs/PickPolicy"
+            },
+            "action": {
+              "type": "string",
+              "const": "PickTag"
+            }
+          },
+          "required": [
+            "action"
+          ]
+        },
+        {
           "description": "Remove all tags from memory",
           "type": "object",
           "properties": {
@@ -4599,6 +4627,62 @@
         "in_label_primary",
         "in_label_secondary",
         "out_label"
+      ]
+    },
+    "PickPolicy": {
+      "description": "The policy `PickTag` uses to choose one of several tags' values per read.\n\nEvery tag in `in_labels` must have the same underlying type (Location,\nString or Numeric - Bool tags are not supported). Which of those a given\npolicy accepts is noted below.",
+      "oneOf": [
+        {
+          "description": "Pick the left-most (first in `in_labels`) tag that has a value for\nthis read. Location, String or Numeric tags only - Numeric tags use\n`NaN` as their \"missing\" value, same as `equal_only` below.",
+          "type": "string",
+          "const": "FirstAvailable"
+        },
+        {
+          "description": "Pick a value only when every input tag agrees for this read;\notherwise the output is missing. Works with Location, String or\nNumeric tags:\n- Location / String: compares the extracted text.\n- Numeric: compares the values; disagreement outputs `NaN` (there is\n  no \"missing\" numeric value).",
+          "type": "string",
+          "const": "EqualOnly"
+        },
+        {
+          "description": "Location or Numeric tags only. Pick the tag with the largest measure\nfor this read:\n- Location: the sum of that tag's region lengths.\n- Numeric: the value itself.",
+          "type": "string",
+          "const": "Largest"
+        },
+        {
+          "description": "Location or Numeric tags only. Pick the tag with the smallest measure\nfor this read - the inverse of `largest`:\n- Location: the sum of that tag's region lengths.\n- Numeric: the value itself.",
+          "type": "string",
+          "const": "Smallest"
+        },
+        {
+          "description": "Location tags only. Pick the tag whose first region starts earliest,\ncomparing `(segment, start coordinate)` tuples - so this also picks\nbetween tags living on different segments.",
+          "type": "string",
+          "const": "LeftMostRegion"
+        }
+      ]
+    },
+    "PickTag": {
+      "description": "Pick one value out of several tags per read, according to `policy`.\n\n# Examples\n\n```toml\n[[step]]\naction = \"PickTag\"\nin_labels = [\"barcode1\", \"barcode2\"]\nout_label = \"barcode\"\npolicy = \"first_available\"\n```",
+      "type": "object",
+      "properties": {
+        "in_labels": {
+          "description": "Input tag labels to choose between. Must all have the same tag type.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "out_label": {
+          "description": "Output tag label for the picked value.",
+          "type": "string"
+        },
+        "policy": {
+          "description": "The policy used to choose which tag's value to output for each read.\n- `first_available`: the left-most tag (in `in_labels`) that has a value.\n- `equal_only`: a value, but only if every input tag agrees; else missing.\n- `largest`: the tag with the largest measure (region length sum, or numeric value).\n- `smallest`: the tag with the smallest measure - the inverse of `largest`.\n- `left_most_region`: Location tags only - the tag starting earliest, comparing\n  `(segment, start)` across all input tags.",
+          "$ref": "#/$defs/PickPolicy"
+        }
+      },
+      "required": [
+        "in_labels",
+        "out_label",
+        "policy"
       ]
     },
     "ForgetAllTags": {

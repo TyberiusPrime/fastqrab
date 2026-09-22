@@ -1,0 +1,39 @@
+options.accept_duplicate_files = true
+
+[input]
+    read1 = 'input_read1.fq'
+    read2 = 'input_read1.fq'
+
+# Tag 'p1': TTTT anywhere in read1
+[[step]]
+    action = 'ExtractIUPAC'
+    search = "TTTT"
+    out_label = 'p1'
+    anchor = 'Anywhere'
+    max_mismatches = 0
+    segment = 'read1'
+
+# Tag 'p2': GGGG anywhere in read2
+[[step]]
+    action = 'ExtractIUPAC'
+    search = "GGGG"
+    out_label = 'p2'
+    anchor = 'Anywhere'
+    max_mismatches = 0
+    segment = 'read2'
+
+# PickTag: segment comes first in the (segment, start) comparison, so a hit on
+# read1 (p1) always wins over a hit on read2 (p2), no matter where either
+# starts. The output degrades to a String tag since p1/p2 live on different
+# segments.
+[[step]]
+    action = 'PickTag'
+    in_labels = ['p1', 'p2']
+    out_label = 'result'
+    policy = 'left_most_region'
+
+[[step]]
+    action = 'StoreTagsInTable'
+
+[output]
+    prefix = "output"

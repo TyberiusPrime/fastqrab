@@ -1,0 +1,197 @@
+Error 1/11
+   ╭─config.toml
+   ┆
+14 │ [[step]]
+15 │ action = "PickTag"
+   ┆          ────┬────
+   ┆              │
+   ┆              ╰───── In this step
+16 │ in_labels = ["tag1", "tag2"]
+   ┆              ───┬──
+   ┆                 │
+   ┆                 ╰──────────── Incompatible tag type
+───╯
+Hint: This transform requires tag 'tag1' to be one of the following types: ['Location', 'String', 'Numeric'],
+      but it is actually of type 'Boolean'.
+      See https://doc_url.example/version-stripped-from-test/docs/redirects/PickTag
+      Or run: `fastqrab template PickTag` for more information.
+
+Error 2/11
+   ╭─config.toml
+   ┆
+14 │ [[step]]
+15 │ action = "PickTag"
+   ┆          ────┬────
+   ┆              │
+   ┆              ╰───── In this step
+16 │ in_labels = ["tag1", "tag2"]
+   ┆                      ───┬──
+   ┆                         │
+   ┆                         ╰──── Incompatible tag type
+───╯
+Hint: This transform requires tag 'tag2' to be one of the following types: ['Location', 'String', 'Numeric'],
+      but it is actually of type 'Boolean'.
+      See https://doc_url.example/version-stripped-from-test/docs/redirects/PickTag
+      Or run: `fastqrab template PickTag` for more information.
+
+Error 3/11
+   ╭─config.toml
+   ┆
+20 │ [[step]]
+21 │ action = "PickTag"
+   ┆          ────┬────
+   ┆              │
+   ┆              ╰───── In this step
+22 │ in_labels = ["tag1", "tag2"]
+   ┆              ───┬──
+   ┆                 │
+   ┆                 ╰──────────── Incompatible tag type
+───╯
+Hint: This transform requires tag 'tag1' to be one of the following types: ['Location', 'Numeric'],
+      but it is actually of type 'Boolean'.
+      See https://doc_url.example/version-stripped-from-test/docs/redirects/PickTag
+      Or run: `fastqrab template PickTag` for more information.
+
+Error 4/11
+   ╭─config.toml
+   ┆
+20 │ [[step]]
+21 │ action = "PickTag"
+   ┆          ────┬────
+   ┆              │
+   ┆              ╰───── In this step
+22 │ in_labels = ["tag1", "tag2"]
+   ┆                      ───┬──
+   ┆                         │
+   ┆                         ╰──── Incompatible tag type
+───╯
+Hint: This transform requires tag 'tag2' to be one of the following types: ['Location', 'Numeric'],
+      but it is actually of type 'Boolean'.
+      See https://doc_url.example/version-stripped-from-test/docs/redirects/PickTag
+      Or run: `fastqrab template PickTag` for more information.
+
+Error 5/11
+   ╭─config.toml
+   ┆
+26 │ [[step]]
+27 │ action = "PickTag"
+   ┆          ────┬────
+   ┆              │
+   ┆              ╰───── In this step
+28 │ in_labels = ["tag1", "tag2"]
+   ┆              ───┬──
+   ┆                 │
+   ┆                 ╰──────────── Incompatible tag type
+───╯
+Hint: This transform requires tag 'tag1' to be one of the following types: ['Location', 'Numeric'],
+      but it is actually of type 'Boolean'.
+      See https://doc_url.example/version-stripped-from-test/docs/redirects/PickTag
+      Or run: `fastqrab template PickTag` for more information.
+
+Error 6/11
+   ╭─config.toml
+   ┆
+26 │ [[step]]
+27 │ action = "PickTag"
+   ┆          ────┬────
+   ┆              │
+   ┆              ╰───── In this step
+28 │ in_labels = ["tag1", "tag2"]
+   ┆                      ───┬──
+   ┆                         │
+   ┆                         ╰──── Incompatible tag type
+───╯
+Hint: This transform requires tag 'tag2' to be one of the following types: ['Location', 'Numeric'],
+      but it is actually of type 'Boolean'.
+      See https://doc_url.example/version-stripped-from-test/docs/redirects/PickTag
+      Or run: `fastqrab template PickTag` for more information.
+
+Error 7/11
+   ╭─config.toml
+   ┆
+32 │ [[step]]
+33 │ action = "PickTag"
+   ┆          ────┬────
+   ┆              │
+   ┆              ╰───── In this step
+34 │ in_labels = ["tag1", "tag2"]
+   ┆              ───┬──
+   ┆                 │
+   ┆                 ╰──────────── Incompatible tag type
+───╯
+Hint: This transform requires tag 'tag1' to be one of the following types: ['Location', 'String', 'Numeric'],
+      but it is actually of type 'Boolean'.
+      See https://doc_url.example/version-stripped-from-test/docs/redirects/PickTag
+      Or run: `fastqrab template PickTag` for more information.
+
+Error 8/11
+   ╭─config.toml
+   ┆
+32 │ [[step]]
+33 │ action = "PickTag"
+   ┆          ────┬────
+   ┆              │
+   ┆              ╰───── In this step
+34 │ in_labels = ["tag1", "tag2"]
+   ┆                      ───┬──
+   ┆                         │
+   ┆                         ╰──── Incompatible tag type
+───╯
+Hint: This transform requires tag 'tag2' to be one of the following types: ['Location', 'String', 'Numeric'],
+      but it is actually of type 'Boolean'.
+      See https://doc_url.example/version-stripped-from-test/docs/redirects/PickTag
+      Or run: `fastqrab template PickTag` for more information.
+
+Error 9/11
+   ╭─config.toml
+   ┆
+32 │ [[step]]
+33 │ action = "PickTag"
+   ┆          ────┬────
+   ┆              │
+   ┆              ╰───── In this step
+   ┆
+34 │ in_labels = ["tag1", "tag2"]
+35 │ out_label = "result4"
+36 │ policy = "equal"
+   ┆          ───┬───
+   ┆             │
+   ┆             ╰──── Invalid enum variant: 'equal'
+───╯
+Hint: Did you mean: EqualOnly, Largest, or Smallest?
+      See https://doc_url.example/version-stripped-from-test/docs/redirects/PickTag
+      Or run: `fastqrab template PickTag` for more information.
+
+Error 10/11
+   ╭─config.toml
+   ┆
+38 │ [[step]]
+39 │ action = "PickTag"
+   ┆          ────┬────
+   ┆              │
+   ┆              ╰───── In this step
+40 │ in_labels = ["tag1", "tag2"]
+   ┆              ───┬──
+   ┆                 │
+   ┆                 ╰──────────── Incompatible tag type
+───╯
+Hint: This transform requires tag 'tag1' to be one of the following types: ['Location'],
+      but it is actually of type 'Boolean'.
+      See https://doc_url.example/version-stripped-from-test/docs/redirects/PickTag
+      Or run: `fastqrab template PickTag` for more information.
+
+Error 11/11
+   ╭─config.toml
+   ┆
+38 │ [[step]]
+39 │ action = "PickTag"
+   ┆          ────┬────
+   ┆              │
+   ┆              ╰───── In this step
+40 │ in_labels = ["tag1", "tag2"]
+   ┆                      ───┬──
+   ┆                         │
+   ┆                         ╰──── Incompatible tag type
+───╯
+Hint: This transform requires tag 'tag2' to be one of the following types: ['Location'],
+      but it is actually of type 'Boolean'.

@@ -1,0 +1,33 @@
+[input]
+    read1 = 'input_read1.fq'
+
+[[step]]
+    action = 'ExtractIUPAC'
+    search = 'AAAA'
+    out_label = 'loc_tag'
+    anchor = 'Left'
+    max_mismatches = 0
+
+[[step]]
+    action = 'CalcLength'
+    segment = 'read1'
+    out_label = 'num_tag'
+
+# Both Location and Numeric tags are individually accepted by 'equal_only',
+# but PickTag still requires every input tag to share the same type.
+[[step]]
+    action = 'PickTag'
+    in_labels = ['loc_tag', 'num_tag']
+    out_label = 'result'
+    policy = 'equal_only'
+
+[[step]]
+    action = 'StoreTagInComment'
+    in_label = 'result'
+
+[output]
+    prefix = "output"
+
+# --- Output steps (migrated from [output]) ---
+[[step]]
+    action = "OutputFASTQ"

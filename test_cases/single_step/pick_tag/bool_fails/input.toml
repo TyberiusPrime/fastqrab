@@ -1,0 +1,59 @@
+[input]
+read1 = "input_read1.fq"
+
+[[step]]
+action = "EvalExpression"
+out_label = "tag1"
+expression = "len_read1 > 10"
+
+[[step]]
+action = "EvalExpression"
+out_label = "tag2"
+expression = "len_read1 > 10"
+
+[[step]]
+action = "PickTag"
+in_labels = ["tag1", "tag2"]
+out_label = "result1"
+policy = "first_available"
+
+[[step]]
+action = "PickTag"
+in_labels = ["tag1", "tag2"]
+out_label = "result2"
+policy = "largest"
+
+[[step]]
+action = "PickTag"
+in_labels = ["tag1", "tag2"]
+out_label = "result3"
+policy = "smallest"
+
+[[step]]
+action = "PickTag"
+in_labels = ["tag1", "tag2"]
+out_label = "result4"
+policy = "equal"
+
+[[step]]
+action = "PickTag"
+in_labels = ["tag1", "tag2"]
+out_label = "result5"
+policy = "left_most_region"
+
+[[step]]
+action = "StoreTagInComment"
+in_label = [
+  "result1",
+  "result2",
+  "result3",
+  "result4",
+  "result5",
+]
+
+# --- Output steps (migrated from [output]) ---
+[[step]]
+action = "OutputFASTQ"
+
+[output]
+prefix = "output"

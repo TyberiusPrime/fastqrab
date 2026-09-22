@@ -1,0 +1,36 @@
+[input]
+    read1 = 'input_read1.fq'
+
+# Tag 'p1': GGGG anywhere in the read
+[[step]]
+    action = 'ExtractIUPAC'
+    search = "GGGG"
+    out_label = 'p1'
+    anchor = 'Anywhere'
+    max_mismatches = 0
+
+# Tag 'p2': CCCC anywhere in the read
+[[step]]
+    action = 'ExtractIUPAC'
+    search = "CCCC"
+    out_label = 'p2'
+    anchor = 'Anywhere'
+    max_mismatches = 0
+
+# PickTag: pick whichever tag's hit starts earliest, regardless of list order
+[[step]]
+    action = 'PickTag'
+    in_labels = ['p1', 'p2']
+    out_label = 'result'
+    policy = 'left_most_region'
+
+[[step]]
+    action = 'StoreTagInComment'
+    in_label = ['result', 'location_result']
+
+[output]
+    prefix = "output"
+
+# --- Output steps (migrated from [output]) ---
+[[step]]
+    action = "OutputFASTQ"

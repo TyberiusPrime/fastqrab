@@ -1,0 +1,8 @@
+@read1_cmp_wins
+AAAACGTACGT
++
+IIIIIIIIIII
+@read2_fallback_wins
+CGTACGTACGT
++
+IIIIIIIIIII

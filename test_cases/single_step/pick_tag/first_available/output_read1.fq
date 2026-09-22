@@ -1,0 +1,12 @@
+@read1_a_wins|result=AAAA|location_result=read1:0-4
+AAAACGTACGTTTT
++
+IIIIIIIIIIIIII
+@read2_b_wins|result=TTTT|location_result=read1:10-14
+CGCGCGTACGTTTT
++
+IIIIIIIIIIIIII
+@read3_both_missing|result=|location_result=
+CGCGCGTACGCGCG
++
+IIIIIIIIIIIIII

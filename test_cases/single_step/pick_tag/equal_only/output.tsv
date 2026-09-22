@@ -1,0 +1,4 @@
+ReadName	result	x	z
+read1_equal	GGGG	GGGG	GGGG
+read2_present_but_differ		TTTT	GGGG
+read3_one_missing		TTTT	

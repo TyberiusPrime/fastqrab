@@ -1,0 +1,4 @@
+ReadName	p1	p2	result
+read1_p1_wins_on_segment	TTTT	GGGG	TTTT
+read2_only_p2		GGGG	GGGG
+read3_both_missing			

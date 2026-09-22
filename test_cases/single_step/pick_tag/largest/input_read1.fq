@@ -1,0 +1,12 @@
+@read1_long_wins
+AAAACGTACG
++
+IIIIIIIIII
+@read2_only_short
+AACGTACGTA
++
+IIIIIIIIII
+@read3_both_missing
+CGTACGTACG
++
+IIIIIIIIII

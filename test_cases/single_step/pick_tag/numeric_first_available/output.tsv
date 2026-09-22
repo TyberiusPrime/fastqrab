@@ -1,0 +1,3 @@
+ReadName	cmp	fallback	presence_a	presence_b	result
+read1_cmp_wins	0	11	AAAA	AAAA	0
+read2_fallback_wins	NaN	11			11

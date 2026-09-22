@@ -1,0 +1,32 @@
+[input]
+    read1 = 'input_read1.fq'
+
+# Tag 'x': first 4 bases (always present)
+[[step]]
+    action = 'ExtractRegion'
+    source = 'read1'
+    start = 0
+    length = 4
+    anchor = 'Start'
+    out_label = 'x'
+
+# Tag 'z': GGGG anywhere in the read (missing if absent)
+[[step]]
+    action = 'ExtractIUPAC'
+    search = 'GGGG'
+    out_label = 'z'
+    anchor = 'Anywhere'
+    max_mismatches = 0
+
+# PickTag: only produce a value when both tags agree
+[[step]]
+    action = 'PickTag'
+    in_labels = ['x', 'z']
+    out_label = 'result'
+    policy = 'equal_only'
+
+[[step]]
+    action = 'StoreTagsInTable'
+
+[output]
+    prefix = "output"

@@ -439,6 +439,35 @@ fn benchmark_key_steps(c: &mut Criterion) {
             thread_count,
         ),
         BenchmarkConfig::new(
+            "PickTag",
+            r#"[[step]]
+    action = "ExtractRegion"
+    segment = "read1"
+    start = 0
+    length = 3
+    out_label = "tag1"
+    anchor = "Start"
+
+[[step]]
+    action = "ExtractRegion"
+    segment = "read1"
+    start = 3
+    length = 3
+    out_label = "tag2"
+    anchor = "Start"
+
+[[step]]
+    action = "PickTag"
+    in_labels = ["tag1", "tag2"]
+    out_label = "result"
+    policy = "largest"
+
+[[step]]
+    action = "ForgetAllTags""#,
+            molecule_count,
+            thread_count,
+        ),
+        BenchmarkConfig::new(
             "ConvertQuality",
             r#"[[step]]
     action = "ConvertQuality"

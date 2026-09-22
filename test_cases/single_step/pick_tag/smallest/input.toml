@@ -1,0 +1,36 @@
+[input]
+    read1 = 'input_read1.fq'
+
+# Tag 'short': matches AA at the start (2 bases)
+[[step]]
+    action = 'ExtractIUPAC'
+    search = "AA"
+    out_label = 'short'
+    anchor = 'Left'
+    max_mismatches = 0
+
+# Tag 'long': matches AAAA at the start (4 bases)
+[[step]]
+    action = 'ExtractIUPAC'
+    search = "AAAA"
+    out_label = 'long'
+    anchor = 'Left'
+    max_mismatches = 0
+
+# PickTag: pick the tag whose regions cover the fewest bases - the inverse of 'largest'
+[[step]]
+    action = 'PickTag'
+    in_labels = ['short', 'long']
+    out_label = 'result'
+    policy = 'smallest'
+
+[[step]]
+    action = 'StoreTagInComment'
+    in_label = ['result', 'location_result']
+
+[output]
+    prefix = "output"
+
+# --- Output steps (migrated from [output]) ---
+[[step]]
+    action = "OutputFASTQ"

@@ -1,0 +1,30 @@
+[input]
+    read1 = 'input_read1.fq'
+
+# Tag 'length_tag': the read length
+[[step]]
+    action = 'CalcLength'
+    segment = 'read1'
+    out_label = 'length_tag'
+
+# Tag 'count_tag': absolute count of 'A' bases
+[[step]]
+    action = 'CalcBaseContent'
+    segment = 'read1'
+    bases_to_count = 'A'
+    relative = false
+    out_label = 'count_tag'
+
+# PickTag: only produce a value when both numeric tags agree exactly;
+# disagreement outputs NaN (Numeric tags have no "missing" value).
+[[step]]
+    action = 'PickTag'
+    in_labels = ['length_tag', 'count_tag']
+    out_label = 'result'
+    policy = 'equal_only'
+
+[[step]]
+    action = 'StoreTagsInTable'
+
+[output]
+    prefix = "output"

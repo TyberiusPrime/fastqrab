@@ -1,0 +1,12 @@
+@read1_p2_starts_earlier
+AACCCCAAGGGGAA
++
+IIIIIIIIIIIIII
+@read2_only_p2
+AAAACCCCAAA
++
+IIIIIIIIIII
+@read3_both_missing
+AAAAAAAAAAA
++
+IIIIIIIIIII

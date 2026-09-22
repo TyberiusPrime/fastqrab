@@ -1,0 +1,31 @@
+[input]
+    read1 = 'input_read1.fq'
+
+# Tag 'a_count': absolute count of 'A' bases
+[[step]]
+    action = 'CalcBaseContent'
+    segment = 'read1'
+    bases_to_count = 'A'
+    relative = false
+    out_label = 'a_count'
+
+# Tag 't_count': absolute count of 'T' bases
+[[step]]
+    action = 'CalcBaseContent'
+    segment = 'read1'
+    bases_to_count = 'T'
+    relative = false
+    out_label = 't_count'
+
+# PickTag: for Numeric tags, 'largest' picks the largest value
+[[step]]
+    action = 'PickTag'
+    in_labels = ['a_count', 't_count']
+    out_label = 'result'
+    policy = 'largest'
+
+[[step]]
+    action = 'StoreTagsInTable'
+
+[output]
+    prefix = "output"

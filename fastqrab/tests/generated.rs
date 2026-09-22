@@ -12378,6 +12378,175 @@ fn test_cases_x_single_step_x_output_x_output_neither_r1_nor_r2_but_index() {
 
 #[test]
 
+fn test_cases_x_single_step_x_pick_tag_x_bool_fails() {
+    println!("Test case is in: test_cases/single_step/pick_tag/bool_fails");
+    run_test(
+        std::path::Path::new("../test_cases/single_step/pick_tag/bool_fails"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_pick_tag_x_duplicate_labels_fails() {
+    println!("Test case is in: test_cases/single_step/pick_tag/duplicate_labels_fails");
+    run_test(
+        std::path::Path::new("../test_cases/single_step/pick_tag/duplicate_labels_fails"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_pick_tag_x_equal_only() {
+    println!("Test case is in: test_cases/single_step/pick_tag/equal_only");
+    run_test(
+        std::path::Path::new("../test_cases/single_step/pick_tag/equal_only"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_pick_tag_x_first_available() {
+    println!("Test case is in: test_cases/single_step/pick_tag/first_available");
+    run_test(
+        std::path::Path::new("../test_cases/single_step/pick_tag/first_available"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_pick_tag_x_largest() {
+    println!("Test case is in: test_cases/single_step/pick_tag/largest");
+    run_test(
+        std::path::Path::new("../test_cases/single_step/pick_tag/largest"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_pick_tag_x_largest_rejects_string_tag() {
+    println!("Test case is in: test_cases/single_step/pick_tag/largest_rejects_string_tag");
+    run_test(
+        std::path::Path::new("../test_cases/single_step/pick_tag/largest_rejects_string_tag"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_pick_tag_x_left_most_cross_segment() {
+    println!("Test case is in: test_cases/single_step/pick_tag/left_most_cross_segment");
+    run_test(
+        std::path::Path::new("../test_cases/single_step/pick_tag/left_most_cross_segment"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_pick_tag_x_left_most_same_segment() {
+    println!("Test case is in: test_cases/single_step/pick_tag/left_most_same_segment");
+    run_test(
+        std::path::Path::new("../test_cases/single_step/pick_tag/left_most_same_segment"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_pick_tag_x_mixed_location_string_first_available() {
+    println!(
+        "Test case is in: test_cases/single_step/pick_tag/mixed_location_string_first_available"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/pick_tag/mixed_location_string_first_available",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_pick_tag_x_mixed_types_rejected() {
+    println!("Test case is in: test_cases/single_step/pick_tag/mixed_types_rejected");
+    run_test(
+        std::path::Path::new("../test_cases/single_step/pick_tag/mixed_types_rejected"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_pick_tag_x_numeric_equal_only() {
+    println!("Test case is in: test_cases/single_step/pick_tag/numeric_equal_only");
+    run_test(
+        std::path::Path::new("../test_cases/single_step/pick_tag/numeric_equal_only"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_pick_tag_x_numeric_first_available() {
+    println!("Test case is in: test_cases/single_step/pick_tag/numeric_first_available");
+    run_test(
+        std::path::Path::new("../test_cases/single_step/pick_tag/numeric_first_available"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_pick_tag_x_numeric_largest() {
+    println!("Test case is in: test_cases/single_step/pick_tag/numeric_largest");
+    run_test(
+        std::path::Path::new("../test_cases/single_step/pick_tag/numeric_largest"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_pick_tag_x_numeric_smallest() {
+    println!("Test case is in: test_cases/single_step/pick_tag/numeric_smallest");
+    run_test(
+        std::path::Path::new("../test_cases/single_step/pick_tag/numeric_smallest"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_pick_tag_x_smallest() {
+    println!("Test case is in: test_cases/single_step/pick_tag/smallest");
+    run_test(
+        std::path::Path::new("../test_cases/single_step/pick_tag/smallest"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
 fn test_cases_x_single_step_x_quantify_tag() {
     println!("Test case is in: test_cases/single_step/quantify_tag");
     run_test(

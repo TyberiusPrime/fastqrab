@@ -1,0 +1,6 @@
+20 │     in_labels = ['loc_tag', 'num_tag']
+   ┆                  ────┬────  ────┬────
+   ┆                      │          │
+   ┆                      ╰───────────────── First tag is Location
+   ┆                                 │
+   ┆                                 ╰────── This tag is Numeric (0..)

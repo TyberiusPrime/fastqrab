@@ -1,0 +1,6 @@
+24 │     in_labels = ['loc_tag', 'str_tag']
+   ┆                  ────┬────  ────┬────
+   ┆                      │          │
+   ┆                      ╰───────────────── First tag is Location
+   ┆                                 │
+   ┆                                 ╰────── This tag is String

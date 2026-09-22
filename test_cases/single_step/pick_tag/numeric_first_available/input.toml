@@ -1,0 +1,46 @@
+[input]
+    read1 = 'input_read1.fq'
+
+# Two location tags matching the same motif, so they agree whenever they're
+# both present (and are both missing together).
+[[step]]
+    action = 'ExtractIUPAC'
+    search = 'AAAA'
+    out_label = 'presence_a'
+    anchor = 'Left'
+    max_mismatches = 0
+
+[[step]]
+    action = 'ExtractIUPAC'
+    search = 'AAAA'
+    out_label = 'presence_b'
+    anchor = 'Left'
+    max_mismatches = 0
+
+# Numeric tag 'cmp': 0.0 when both 'presence_*' tags match, NaN (missing)
+# otherwise - CompareStringTags outputs NaN whenever either input is missing.
+[[step]]
+    action = 'CompareStringTags'
+    in_label_a = 'presence_a'
+    in_label_b = 'presence_b'
+    out_label = 'cmp'
+
+# Numeric tag 'fallback': the read length, always present (never NaN)
+[[step]]
+    action = 'CalcLength'
+    segment = 'read1'
+    out_label = 'fallback'
+
+# PickTag: for Numeric tags, NaN is the "missing" value, so first_available
+# picks the first tag that isn't NaN for that read.
+[[step]]
+    action = 'PickTag'
+    in_labels = ['cmp', 'fallback']
+    out_label = 'result'
+    policy = 'first_available'
+
+[[step]]
+    action = 'StoreTagsInTable'
+
+[output]
+    prefix = "output"

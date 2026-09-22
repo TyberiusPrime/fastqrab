@@ -1,0 +1,12 @@
+@read1_short_wins|result=AA|location_result=read1:0-2
+AAAACGTACG
++
+IIIIIIIIII
+@read2_only_short|result=AA|location_result=read1:0-2
+AACGTACGTA
++
+IIIIIIIIII
+@read3_both_missing|result=|location_result=
+CGTACGTACG
++
+IIIIIIIIII

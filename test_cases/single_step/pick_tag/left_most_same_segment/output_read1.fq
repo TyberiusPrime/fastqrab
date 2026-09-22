@@ -1,0 +1,12 @@
+@read1_p2_starts_earlier|result=CCCC|location_result=read1:2-6
+AACCCCAAGGGGAA
++
+IIIIIIIIIIIIII
+@read2_only_p2|result=CCCC|location_result=read1:4-8
+AAAACCCCAAA
++
+IIIIIIIIIII
+@read3_both_missing|result=|location_result=
+AAAAAAAAAAA
++
+IIIIIIIIIII
