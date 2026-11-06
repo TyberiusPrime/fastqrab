@@ -1,0 +1,26 @@
+# `other_read_name_end_char` trims read *names* and is only meaningful for a
+# name source. Setting it on a sequence source (`source = "read1"`) is a config
+# error rather than being silently ignored.
+[input]
+    read1 = 'input_read1.fq'
+
+[[step]]
+    action = 'TagOtherFile'
+    source = 'read1'
+    other_read_name_end_char = ' '
+    out_label = 'present'
+    filename = 'input_reference.fq'
+    false_positive_rate = 0
+    seed = 42
+
+[[step]]
+    action = 'FilterByTag'
+    in_label = 'present'
+    keep_or_remove = 'Keep'
+
+[output]
+    prefix = "output"
+
+# --- Output steps (migrated from [output]) ---
+[[step]]
+    action = "OutputFASTQ"

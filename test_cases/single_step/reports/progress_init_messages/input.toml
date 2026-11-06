@@ -10,6 +10,7 @@
 [[step]]
     action = 'TagOtherFile'
     source = 'name:read1'
+    other_read_name_end_char = false
     filename = 'input_tag_source.fq'
     out_label = 'present'
     false_positive_rate = 0.0

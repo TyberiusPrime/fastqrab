@@ -19,7 +19,9 @@ Supports comparing by read sequence, read name, and tags.
     seed = 42 # seed for randomness
     include_mapped = true # in case of BAM/SAM, whether to include aligned reads
     include_unmapped = true # in case of BAM/SAM, whether to include unaligned reads
-    other_readname_end_character = " " # (optional), in name: mode, Cut the other files read names at this character
+    # other_readname_end_character = " " # (required/accepted only in source=name: mode), 
+                                       # Cut the other files read names at this character.
+                                       # set to false to not cut. 
 
 
 ```
@@ -32,8 +34,10 @@ Please note our [remarks about cuckoo filters]({{< relref "docs/faq/_index.md" >
 We can compare reads based on sequencs, names, or extracted sequences (=string & location tags),
 by using [source]({{< relref "docs/concepts/source.md" >}}) concept.
 
-In name mode, our read's names are cut [input.options.read_name_end_character]({{< relref "docs/reference/input-section.md" >}})at 
-The other files read names are cut if other_read_name_end_character is set.
+In name mode, our read's names are *always* cut 
+at [input.options.read_name_end_character]({{< relref "docs/reference/input-section.md" >}}). 
 
-In tag mode, missing tags are treated as 'not present in other file'. 
+The other files read names are only cut if other_read_name_end_character is set to a character / byte value.
+The value _false_ is used to signal 'do not cut'.
 
+In tag mode, missing tags are treated as 'not present in other file'.

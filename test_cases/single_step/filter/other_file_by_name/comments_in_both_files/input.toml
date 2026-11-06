@@ -1,0 +1,34 @@
+# TagOtherFile by read name, exact (false_positive_rate = 0), where the read
+# headers in *both* the main input and the reference file carry a space-separated
+# comment (e.g. `ERR2432917.1 1/1`). The name used for matching must be the
+# canonical prefix before the comment separator (` `). The comment differs
+# between the two files for the same read (`1/1` here vs `1/2` / `2/1` in the
+# reference), so the read matches *only* if the comment is stripped before
+# comparison -- matching on the whole header line would miss it. Note the name
+# itself contains a `.` and the comment a `/`; neither must be treated as the
+# separator.
+[input]
+    read1 = 'input_read1.fq'
+    options.read_comment_character = ' '
+
+[[step]]
+    action = 'TagOtherFile'
+    source = 'name:read1'
+    out_label = 'present'
+    filename = 'input_reference.fq'
+    false_positive_rate = 0
+    other_read_name_end_char = ' '
+    seed = 42
+
+[[step]]
+    action = 'FilterByTag'
+    in_label = 'present'
+    keep_or_remove = 'Keep'
+
+[output]
+    prefix = "output"
+
+# --- Output steps (migrated from [output]) ---
+[[step]]
+    action = "OutputFASTQ"
+    compression = "raw"

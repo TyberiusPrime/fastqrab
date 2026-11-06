@@ -6,6 +6,7 @@
 [[step]]
     action = 'TagOtherFile'
     source = "name:read1"
+    other_read_name_end_char = false
     out_label = 'in_other_file'
     filename = 'input_other_file.fq'
     false_positive_rate = 0

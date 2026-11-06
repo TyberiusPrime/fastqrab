@@ -389,7 +389,9 @@
 #    seed = 42 # seed for randomness
 #    include_mapped = true # in case of BAM/SAM, whether to include aligned reads
 #    include_unmapped = true # in case of BAM/SAM, whether to include unaligned reads
-#    other_readname_end_character = " " # if set, truncate names in other file at this character
+#    # other_readname_end_character = " " # required for source=name
+#                                         # truncate names in other file at this character
+#                                         # set to false to disable
 
 
 

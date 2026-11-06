@@ -414,6 +414,78 @@ pub fn tpd_adapt_u8_from_byte_or_char(mut input: TomlValue<toml_edit::Item>) -> 
     })
 }
 
+/// A `u8` separator/terminator character that can also be explicitly disabled.
+///
+/// In TOML the field accepts a single-character string, an integer byte
+/// (`0..=255`), or the literal `false` — the latter meaning "none"
+/// (`Option::None`). Deserialize with [`tpd_adapt_u8_from_byte_char_or_false`].
+///
+/// Unlike a plain `Option<u8>` field (where tpd folds a *missing* value into
+/// `None` and `is_missing()` always returns false), a value of this type carried
+/// through `#[tpd(with = ...)]` keeps its missing state: `false` is a *present*
+/// value, distinct from the field being absent. That lets `verify` require the
+/// field to be set while still accepting `false` as "disabled".
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub struct OptionalByte(pub Option<u8>);
+
+impl fmt::Debug for OptionalByte {
+    // Render transparently as the inner `Option<u8>`, so debug/error output
+    // (e.g. transform-init error messages) is unaffected by the wrapper.
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        self.0.fmt(f)
+    }
+}
+
+/// tpd adapter for [`OptionalByte`]: accepts a single-character string, an
+/// integer byte (`0..=255`), or `false` (→ `OptionalByte(None)`). `true` is
+/// rejected. A missing value passes through as missing, so a `#[tpd(with =
+/// "tpd_adapt_u8_from_byte_char_or_false")]` field can be required in `verify`
+/// via [`toml_pretty_deser::TomlValue::is_missing`].
+pub fn tpd_adapt_u8_from_byte_char_or_false(
+    mut input: TomlValue<toml_edit::Item>,
+) -> TomlValue<OptionalByte> {
+    let help = "Provide either a single letter string, an integer byte (0..255), or `false` to disable (match without trimming)";
+    input.try_map(|input| match input {
+        toml_edit::Item::Value(toml_edit::Value::Boolean(v)) => {
+            if *v.value() {
+                Err(ValidationFailure::new(
+                    "`true` is not a valid value here; use `false` to disable, or a single character",
+                    Some(help),
+                ))
+            } else {
+                Ok(OptionalByte(None))
+            }
+        }
+        toml_edit::Item::Value(toml_edit::Value::Integer(v)) => {
+            if let Ok(b) = TryInto::<u8>::try_into(*v.value()) {
+                Ok(OptionalByte(Some(b)))
+            } else {
+                Err(ValidationFailure::new(
+                    format!("Integer value {v} is out of range for a byte (0..255)"),
+                    Some(help.to_string()),
+                ))
+            }
+        }
+        toml_edit::Item::Value(toml_edit::Value::String(v)) => {
+            let mut chars = v.value().chars();
+            let first = chars.next();
+            let second = chars.next();
+            if let Some(first) = first
+                && let None = second
+                && let Ok(char_first) = TryInto::<u8>::try_into(first)
+            {
+                Ok(OptionalByte(Some(char_first)))
+            } else {
+                Err(ValidationFailure::new("Invalid value", Some(help)))
+            }
+        }
+        _ => Err(ValidationFailure::new(
+            "Wrong type, expected a byte, a single character, or `false`",
+            Some(help),
+        )),
+    })
+}
+
 #[must_use]
 pub fn tpd_adapt_extract_base_or_dot(mut input: TomlValue<String>) -> TomlValue<u8> {
     fn err() -> Result<u8, ValidationFailure> {

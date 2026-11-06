@@ -968,7 +968,7 @@ Mark reads whose sequences/names/tags appear in another file.
     out_label = 'contaminant'      # TYPE: string, REQUIRED
     include_mapped = true # in case of BAM/SAM, whether to include aligned reads
     include_unmapped = true # in case of BAM/SAM, whether to include unaligned reads
-    other_readname_end_char = '/' # TYPE: char, OPTIONAL
+    # other_readname_end_char = '/' # TYPE: char, OPTIONAL, required if source:name=
 ```
 
 ### Matches

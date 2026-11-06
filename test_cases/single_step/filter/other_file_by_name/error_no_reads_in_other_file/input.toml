@@ -4,6 +4,7 @@
 [[step]]
     action = 'TagOtherFile'
     source = 'name:read1'
+    other_read_name_end_char = false
 	out_label = "tag"
     filename = 'input_no_reads.fq.gz'
     false_positive_rate = 0.000001 # so we trigger the other code path

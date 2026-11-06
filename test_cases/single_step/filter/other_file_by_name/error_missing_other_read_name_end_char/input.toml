@@ -1,0 +1,26 @@
+# A name source (`source = "name:..."`) requires `other_read_name_end_char` to
+# be set explicitly -- to a character to trim read names at, or to `false` to
+# match the whole read name. Leaving it out used to silently match whole names
+# (comments included), which is a footgun, so it is now a config error.
+[input]
+    read1 = 'input_read1.fq'
+
+[[step]]
+    action = 'TagOtherFile'
+    source = 'name:read1'
+    out_label = 'present'
+    filename = 'input_reference.fq'
+    false_positive_rate = 0
+    seed = 42
+
+[[step]]
+    action = 'FilterByTag'
+    in_label = 'present'
+    keep_or_remove = 'Keep'
+
+[output]
+    prefix = "output"
+
+# --- Output steps (migrated from [output]) ---
+[[step]]
+    action = "OutputFASTQ"

@@ -44,6 +44,9 @@ AAAAAA_CCCCCC = "sample-1" # output files are named prefix{ix_separator}barcode_
 [[step]]
     action = "TagOtherFile"
     source = "name:read1"
+    # read names in the other file end at the first space; use `false` to match
+    # the whole name (required whenever the source is a name).
+    other_read_name_end_char = " "
     out_label = "a_bool_tag"
     filename = "path/to/boolean_tags.tsv"
     false_positive_rate = 0

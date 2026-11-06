@@ -2,14 +2,14 @@ Error Details ==
 Error 1/1
    ╭─config.toml
    ┆
-14 │ [[step]]
-15 │     action = 'Demultiplex'
+15 │ [[step]]
+16 │     action = 'Demultiplex'
    ┆              ──────┬──────
    ┆                    │
    ┆                    ╰─────── In this step
    ┆
-16 │     in_label = 'in_other_file'
-17 │     output_unmatched = 123
+17 │     in_label = 'in_other_file'
+18 │     output_unmatched = 123
    ┆                        ─┬─
    ┆                         │
    ┆                         ╰── Wrong type: expected boolean, found integer.

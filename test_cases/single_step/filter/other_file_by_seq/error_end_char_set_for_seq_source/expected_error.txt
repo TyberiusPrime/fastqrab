@@ -1,0 +1,1 @@
+other_read_name_end_char is only valid for a name source

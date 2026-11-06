@@ -6,7 +6,7 @@ use super::ApproxOrExactFilter;
 use crate::transformations::extract::extract_bool_tags_from_tag;
 use crate::transformations::tag::initial_filter_elements;
 use crate::transformations::{prelude::*, read_name_canonical_prefix};
-use fastqrab_config::tpd_adapt_u8_from_byte_or_char;
+use fastqrab_config::{OptionalByte, tpd_adapt_u8_from_byte_char_or_false};
 use fastqrab_io::io::{apply_to_read_names, apply_to_read_sequences};
 
 /// `StepInputFiles` id linking `declare_input_files` to the handle taken in
@@ -24,11 +24,15 @@ pub struct OtherFile {
     #[tpd(adapt_in_verify(String), alias = "segment")]
     source: ResolvedSourceNoAll,
 
+    // Accepts a single character / byte to trim read names at, or `false` to
+    // match the whole read name. Required for a name source (see `verify`); a
+    // plain `Option<u8>` default would silently match whole names -- a footgun.
+    #[schemars(with = "Option<u8>")]
     #[tpd(
-        with = "tpd_adapt_u8_from_byte_or_char",
+        with = "tpd_adapt_u8_from_byte_char_or_false",
         alias = "other_read_name_end_char"
     )]
-    pub other_readname_end_character: Option<u8>,
+    pub other_readname_end_character: OptionalByte,
 
     pub out_label: TagLabel,
 
@@ -57,6 +61,7 @@ impl VerifyIn<PartialConfig> for PartialOtherFile {
         Self: Sized + toml_pretty_deser::Visitor,
     {
         self.source.validate_segment(parent);
+
         crate::transformations::tag::validate_seed(&mut self.seed, &mut self.false_positive_rate);
         if let Some(filename) = self.filename.as_ref()
             && Path::new(filename)
@@ -94,6 +99,47 @@ impl VerifyIn<PartialConfig> for PartialOtherFile {
             self.include_mapped.or(false); // just so it's always set.
             self.include_unmapped.or(false);
         }
+
+        // `other_read_name_end_char` is tied to a name source: it is *mandatory*
+        // there (leaving it out would silently match the *whole* read name,
+        // comment included, against the other file -- almost never intended) and
+        // *forbidden* otherwise (it trims read names, which is meaningless for a
+        // sequence/tag source). The user must choose a character to trim at, or
+        // `false` to opt into whole-name matching. This runs after the
+        // include_mapped/unmapped defaulting above so a missing end char does
+        // not cascade into spurious "missing include_*" errors.
+        match self.source.as_ref().and_then(|x| x.as_ref_post()) {
+            Some(ResolvedSourceNoAll::Name { .. }) => {
+                if self.other_readname_end_character.is_missing() {
+                    self.other_readname_end_character.or(OptionalByte(None)); // set it so it still concretizes
+                    return Err(ValidationFailure::new(
+                        "Missing other_read_name_end_char",
+                        Some(
+                            "When the source is a read name (`source = \"name:...\"`), set `other_read_name_end_char` to the character that ends the read name in the other file (e.g. ' '), or to `false` to match the whole read name.",
+                        ),
+                    ));
+                }
+            }
+            Some(_) => {
+                // Sequence or tag source: reject the end char rather than
+                // silently ignoring it.
+                if !self.other_readname_end_character.is_missing() {
+                    return Err(ValidationFailure::new(
+                        "other_read_name_end_char is only valid for a name source",
+                        Some(
+                            "`other_read_name_end_char` trims read names and only applies when `source = \"name:...\"`. Remove it, or change the source to a read name.",
+                        ),
+                    ));
+                }
+                self.other_readname_end_character.or(OptionalByte(None));
+            }
+            None => {
+                // Source did not resolve; it reports its own error. Just default
+                // this so the field concretizes and we don't pile on.
+                self.other_readname_end_character.or(OptionalByte(None));
+            }
+        }
+
         self.source.verify(|v| {
             if let Some(output_tag) = self.out_label.as_ref()
                 && let MustAdapt::PostVerify(ResolvedSourceNoAll::Tag(input_tag)) = v
@@ -239,7 +285,7 @@ impl Step for OtherFile {
                     &mut |read_name| {
                         let trimmed = read_name_canonical_prefix(
                             read_name,
-                            self.other_readname_end_character,
+                            self.other_readname_end_character.0,
                         );
 
                         if !filter.contains(&FragmentEntry(&[trimmed])) {

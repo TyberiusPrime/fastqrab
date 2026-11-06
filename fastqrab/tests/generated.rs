@@ -10638,6 +10638,21 @@ fn test_cases_x_single_step_x_filter_x_min_len() {
 
 #[test]
 
+fn test_cases_x_single_step_x_filter_x_other_file_by_name_x_comments_in_both_files() {
+    println!(
+        "Test case is in: test_cases/single_step/filter/other_file_by_name/comments_in_both_files"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/filter/other_file_by_name/comments_in_both_files",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
 fn test_cases_x_single_step_x_filter_x_other_file_by_name_x_distinct_separators() {
     println!(
         "Test case is in: test_cases/single_step/filter/other_file_by_name/distinct_separators"
@@ -10702,6 +10717,22 @@ fn test_cases_x_single_step_x_filter_x_other_file_by_name_x_error_false_positive
     run_test(
         std::path::Path::new(
             "../test_cases/single_step/filter/other_file_by_name/error_false_positive_rate/too_low",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_filter_x_other_file_by_name_x_error_missing_other_read_name_end_char()
+{
+    println!(
+        "Test case is in: test_cases/single_step/filter/other_file_by_name/error_missing_other_read_name_end_char"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/filter/other_file_by_name/error_missing_other_read_name_end_char",
         ),
         "input.toml",
         1,
@@ -10851,6 +10882,21 @@ fn test_cases_x_single_step_x_filter_x_other_file_by_name_x_wrong_compression_fo
     run_test(
         std::path::Path::new(
             "../test_cases/single_step/filter/other_file_by_name/wrong_compression_format",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_filter_x_other_file_by_seq_x_error_end_char_set_for_seq_source() {
+    println!(
+        "Test case is in: test_cases/single_step/filter/other_file_by_seq/error_end_char_set_for_seq_source"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/filter/other_file_by_seq/error_end_char_set_for_seq_source",
         ),
         "input.toml",
         1,
