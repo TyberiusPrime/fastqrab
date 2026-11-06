@@ -94,7 +94,7 @@ fastqrab-dna = { path = "fastqrab-dna", version = "0.9.0" }
 fastqrab-io = { path = "fastqrab-io", version = "0.9.0" }
 fastqrab-steps = { path = "fastqrab-steps", version = "0.9.0" }
 
-rusty-rapidgzip = { version = "0.2.1" }
+rusty-rapidgzip = { version = "0.2.2" }
 
 [workspace.lints.clippy]
 get_unwrap = "warn"

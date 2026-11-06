@@ -5,8 +5,8 @@ Caused by:
     0: Problem in segment r1 while opening 'input_read1.fq.gz'
     1: decompressor subprocess exited unsuccessfully: exit status: 1. 
        Stderr was '''
-       Error: gzip: truncated gzip stream
+       Error: deflate: unexpected end of input
        
        Caused by:
-           truncated gzip stream
+           unexpected end of input
        '''

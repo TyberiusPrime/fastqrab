@@ -6,7 +6,7 @@
 //! shared-memory ring (shm mode). fastqrab spawns itself with `__decompressor` so
 //! the decoders' `unsafe` (rapidgzip, libzstd) runs in an isolated process.
 
-use std::io::{Read as _, Write};
+use std::io::Write;
 use std::path::PathBuf;
 use std::sync::Arc;
 
@@ -158,10 +158,13 @@ pub fn run() -> Result<()> {
                 },
                 recycle_rx: Some(recycle_rx),
                 recycle_tx: Some(recycle_tx.clone()),
+                max_bytes_output: peek_bytes,
             };
             std::thread::spawn(move || read_gz(&input, tx, cfg).map(|_| ()).map_err(Into::into))
         }
-        Format::Zstd => std::thread::spawn(move || read_zstd(&input, &tx, &recycle_rx, chunk_size)),
+        Format::Zstd => {
+            std::thread::spawn(move || read_zstd(&input, &tx, &recycle_rx, chunk_size, peek_bytes))
+        }
     };
 
     match args.shm_fd {
@@ -190,24 +193,44 @@ pub fn run() -> Result<()> {
     Ok(())
 }
 
+/// Decode a zstd file into `tx` in chunks of `chunk_size` bytes.
+///
+/// With `max_bytes = Some(n)`, stops after emitting `n` bytes instead of
+/// decoding the rest of the input (peek mode). Also stops once the receiver
+/// has hung up.
 fn read_zstd(
     input: &std::path::Path,
     tx: &Sender<Arc<Vec<u8>>>,
     recycle_rx: &Receiver<Vec<u8>>,
     chunk_size: usize,
+    max_bytes: Option<usize>,
 ) -> Result<()> {
     let file = std::fs::File::open(input)
         .with_context(|| format!("opening {} for zstd decode", input.display()))?;
-    let mut decoder =
-        zstd::stream::read::Decoder::new(file).context("initializing zstd decoder")?;
-    loop {
+    let decoder = zstd::stream::read::Decoder::new(file).context("initializing zstd decoder")?;
+    emit_chunks(decoder, tx, recycle_rx, chunk_size, max_bytes)
+}
+
+/// Read `reader` to EOF (or until `max_bytes` have been read), sending it on
+/// `tx` in `chunk_size` pieces.
+fn emit_chunks(
+    mut reader: impl std::io::Read,
+    tx: &Sender<Arc<Vec<u8>>>,
+    recycle_rx: &Receiver<Vec<u8>>,
+    chunk_size: usize,
+    max_bytes: Option<usize>,
+) -> Result<()> {
+    let mut remaining = max_bytes.unwrap_or(usize::MAX);
+    while remaining > 0 {
+        // Never decode past the budget: the last chunk is only as big as needed.
+        let want = chunk_size.min(remaining);
         let mut buf = recycle_rx.try_recv().unwrap_or_default();
         buf.clear();
-        buf.resize(chunk_size, 0);
+        buf.resize(want, 0);
         let mut filled = 0usize;
-        while filled < chunk_size {
+        while filled < want {
             //mutants::skip - not observable but in ram usage.
-            let n = decoder.read(&mut buf[filled..])?;
+            let n = reader.read(&mut buf[filled..])?;
             if n == 0 {
                 break;
             }
@@ -220,7 +243,8 @@ fn read_zstd(
         if tx.send(Arc::new(buf)).is_err() {
             break;
         }
-        if filled < chunk_size {
+        remaining -= filled;
+        if filled < want {
             //mutants::skip - early exit, otherwise the next read would get 0.
             break;
         }
@@ -523,4 +547,93 @@ fn apply_landlock(input: &std::path::Path) -> Result<()> {
 #[mutants::skip]
 fn is_consumer_gone(e: &std::io::Error) -> bool {
     e.kind() == std::io::ErrorKind::BrokenPipe
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn pattern(n: usize) -> Vec<u8> {
+        (0..n).map(|i| (i * 7 + i / 251).to_le_bytes()[0]).collect()
+    }
+
+    fn collect(rx: &Receiver<Arc<Vec<u8>>>) -> Vec<u8> {
+        rx.try_iter().flat_map(|c| c.to_vec()).collect()
+    }
+
+    fn run(data: &[u8], chunk_size: usize, max: Option<usize>) -> Vec<u8> {
+        let (tx, rx) = crossbeam::channel::unbounded();
+        let (_rtx, rrx) = bounded::<Vec<u8>>(1);
+        emit_chunks(data, &tx, &rrx, chunk_size, max).expect("emit");
+        drop(tx);
+        collect(&rx)
+    }
+
+    #[test]
+    fn emit_chunks_respects_max_bytes() {
+        let data = pattern(300_000);
+        for max in [0, 1, 4, 1000, 65_536, 65_537, 299_999, 300_000, 1 << 30] {
+            let out = run(&data, 65_536, Some(max));
+            assert_eq!(out, &data[..max.min(data.len())], "max = {max}");
+        }
+        assert_eq!(run(&data, 65_536, None), data);
+    }
+
+    /// Reader that panics if read past `limit` bytes: proves we stop early
+    /// instead of draining the input.
+    struct Tripwire<'a> {
+        data: &'a [u8],
+        pos: usize,
+        limit: usize,
+    }
+
+    impl std::io::Read for Tripwire<'_> {
+        fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
+            assert!(self.pos < self.limit, "read past the peek budget");
+            let n = buf.len().min(self.data.len() - self.pos);
+            buf[..n].copy_from_slice(&self.data[self.pos..self.pos + n]);
+            self.pos += n;
+            Ok(n)
+        }
+    }
+
+    #[test]
+    fn emit_chunks_stops_reading_at_max_bytes() {
+        let data = pattern(1 << 20);
+        let (tx, rx) = crossbeam::channel::unbounded();
+        let (_rtx, rrx) = bounded::<Vec<u8>>(1);
+        let reader = Tripwire {
+            data: &data,
+            pos: 0,
+            limit: 100,
+        };
+        emit_chunks(reader, &tx, &rrx, 65_536, Some(100)).expect("emit");
+        drop(tx);
+        assert_eq!(collect(&rx), &data[..100]);
+    }
+
+    #[test]
+    fn read_zstd_peek_stops_early() {
+        let dir = std::env::temp_dir().join(format!("fqr_zstd_peek_{}", std::process::id()));
+        std::fs::create_dir_all(&dir).expect("mkdir");
+        let path = dir.join("in.zst");
+        let data = pattern(3 << 20);
+        let mut compressed = zstd::encode_all(&data[..], 1).expect("compress");
+        // Trailing garbage: a full decode fails on it, a peek must not reach it.
+        compressed.extend_from_slice(b"definitely not a zstd frame");
+        std::fs::write(&path, &compressed).expect("write");
+
+        let (_rtx, rrx) = bounded::<Vec<u8>>(1);
+        let (tx, rx) = crossbeam::channel::unbounded();
+        read_zstd(&path, &tx, &rrx, 65_536, Some(1000)).expect("peek decode");
+        drop(tx);
+        assert_eq!(collect(&rx), &data[..1000]);
+
+        let (tx, _rx) = crossbeam::channel::unbounded();
+        assert!(
+            read_zstd(&path, &tx, &rrx, 65_536, None).is_err(),
+            "full decode hits garbage"
+        );
+        let _ = std::fs::remove_dir_all(&dir);
+    }
 }
