@@ -21,6 +21,7 @@ use crate::{
 };
 use fastqrab_io::{
     blocks::FastQChunk,
+    ensure_output_destination_available,
     io::{
         self,
         input::InputOptions,
@@ -172,6 +173,86 @@ fn build_step_output_files(
         }
     }
     Ok(result)
+}
+
+/// Check, up front, that every output file the config would produce is writable
+/// (does not already exist unless `--allow-overwrite`), *before* any step is
+/// initialized.
+///
+/// The per-stage writer construction in [`build_step_output_files`] also runs
+/// this check (via [`ChunkedRecordWriter::new`]), but only when the init loop
+/// reaches that stage — so a clobber error on a late output step would surface
+/// only after earlier steps' `init` has done its (potentially slow) work, e.g.
+/// `TagOtherFile` reading its entire reference file. Running the check here
+/// means the error is reported immediately.
+///
+/// Output filenames are fully determined by the config (demultiplex names come
+/// from [`Transformation::declared_barcodes`], not from `init`), so this walks
+/// the stages exactly like `list_config_output_files` / the runtime init loop —
+/// accumulating the demultiplex info via [`DemultiplexChain`] — and mirrors the
+/// path set and `allow_fifo` rule that [`ChunkedRecordWriter::new`] applies.
+fn preflight_check_output_files(
+    stages: &[crate::config::Stage],
+    output_directory: &Path,
+    output_prefix: &str,
+    output_ix_separator: &str,
+    allow_overwrite: bool,
+) -> Result<()> {
+    let mut chain = DemultiplexChain::new();
+    for (index, stage) in stages.iter().enumerate() {
+        // A step sees the demultiplex info from every Demultiplex step before it.
+        let demultiplex_info = chain.current_info();
+        if let Some(declarations) = &stage.output_declarations {
+            for decl in declarations {
+                for (_tag, resolved) in enumerate_declaration_outputs(
+                    decl.singleton,
+                    &decl.target,
+                    demultiplex_info,
+                    output_prefix,
+                    output_ix_separator,
+                ) {
+                    let ResolvedOutputName::File { basename, suffix } = resolved else {
+                        continue; // stdout has nothing to clobber
+                    };
+                    let paths = ChunkPaths {
+                        directory: output_directory.to_path_buf(),
+                        basename,
+                        suffix,
+                    };
+                    // Mirror the path set ChunkedRecordWriter::new checks: for
+                    // chunked output both the bare name and the `.0` chunk, and
+                    // fifos are only tolerated for non-chunked output.
+                    let chunked = decl.chunk_policy.records_per_chunk.is_some();
+                    let check_paths = if chunked {
+                        vec![paths.nth(0, 0), paths.nth(0, 1)]
+                    } else {
+                        vec![paths.nth(0, 0)]
+                    };
+                    let allow_fifo = !chunked;
+                    for path in &check_paths {
+                        ensure_output_destination_available(path, allow_overwrite, allow_fifo)
+                            .with_context(|| {
+                                format!(
+                                    "Output file for step index {index} is not available: {:?}",
+                                    stage.transformation
+                                )
+                            })?;
+                    }
+                }
+            }
+        }
+        // Advance the chain *after* this step's own outputs are enumerated, so a
+        // Demultiplex step's split only affects steps downstream of it.
+        if let Transformation::Demultiplex(d) = &stage.transformation {
+            chain.push(
+                index,
+                d.declared_barcodes(),
+                d.in_label.to_string(),
+                output_ix_separator,
+            )?; // cov:excl-line
+        }
+    }
+    Ok(())
 }
 
 /// Accumulates the demultiplex tag→name mapping as the pipeline walks its
@@ -720,6 +801,18 @@ impl RunStage0 {
             .to_string();
         let output_ix_separator = parsed.get_ix_separator();
         let simulated_failure = parsed.options.debug_failures.simulated_output_failure()?;
+
+        // Fail fast on pre-existing output files, before any step's `init` runs
+        // (and in particular before TagOtherFile reads its whole reference file).
+        // The per-stage writer construction below re-checks and is authoritative;
+        // this only moves the *error* earlier.
+        preflight_check_output_files(
+            &parsed.stages,
+            output_directory,
+            &output_prefix,
+            &output_ix_separator,
+            allow_overwrite,
+        )?;
 
         let report_metadata = std::sync::Arc::new(transformations::ReportMetadata {
             report_labels: parsed.report_labels.clone(),

@@ -3328,6 +3328,17 @@ fn test_cases_x_output_x_output_suffix_x_fastq() {
 
 #[test]
 
+fn test_cases_x_output_x_overwrite_checked_before_step_init() {
+    println!("Test case is in: test_cases/output/overwrite_checked_before_step_init");
+    run_test(
+        std::path::Path::new("../test_cases/output/overwrite_checked_before_step_init"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
 fn test_cases_x_output_x_progress_x_basic() {
     println!("Test case is in: test_cases/output/progress/basic");
     run_test(

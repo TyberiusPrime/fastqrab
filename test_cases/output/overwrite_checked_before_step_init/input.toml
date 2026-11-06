@@ -1,0 +1,32 @@
+[input]
+    read1 = 'input_read1.fq'
+
+[output]
+    prefix = "output"
+
+# TagOtherFile reads its *entire* reference file during init. The reference here
+# (input_broken_reference.fq) is a deliberately malformed FASTQ, so reading it
+# fails with a parse error.
+#
+# The output writer (OutputFASTQ) is a *later* step. Before the up-front
+# pre-flight check existed, each step's output was only checked for
+# pre-existence when the init loop reached it -- so this reference read (and its
+# parse error) happened *before* the pre-existing output was ever noticed. The
+# pre-flight check must report the pre-existing output first, which means this
+# broken reference is never read: the expected error below is the overwrite
+# error, not the FASTQ parse error. If the ordering regresses, the run fails
+# with the parse error instead and this test fails.
+[[step]]
+    action = 'TagOtherFile'
+    source = 'name:read1'
+    filename = 'input_broken_reference.fq'
+    out_label = 'present'
+    false_positive_rate = 0.0
+
+[[step]]
+    action = 'StoreTagInComment'
+    in_label = 'present'
+    segment = 'read1'
+
+[[step]]
+    action = "OutputFASTQ"
