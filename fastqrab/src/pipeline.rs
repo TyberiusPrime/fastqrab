@@ -986,7 +986,8 @@ impl RunStage1 {
             pod_demux: ThreadCount(parsed.threading_configuration.n_pod_demux_per_segment),
         };
         let mut input_files =
-            crate::io::open_input_files(input_config).context("Error opening input files")?;
+            crate::io::open_input_files(input_config, &parsed.input_formats_detected)
+                .context("Error opening input files")?;
 
         let block_size = parsed.options.block_size;
         let buffer_size = parsed.options.buffer_size;

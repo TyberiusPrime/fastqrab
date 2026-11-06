@@ -465,14 +465,17 @@ pub fn open_file(filename: impl AsRef<Path>) -> Result<ex::fs::File> {
     Ok(fh)
 }
 
-pub fn open_input_file(filename: impl AsRef<Path>) -> Result<InputFile> {
+pub fn open_input_file(filename: impl AsRef<Path>, format: Option<DetectedInputFormat>) -> Result<InputFile> {
     let filename = filename.as_ref();
     if filename.to_string_lossy() == STDIN_MAGIC_PATH {
         let file = open_stdin()?;
         return Ok(InputFile::Fastq(file, None));
     }
     let path = Path::new(filename);
-    let format = detect_input_format(path)?.0;
+    let format =  match format {
+        Some(v) => v,
+        None => detect_input_format(path)?.0,
+    };
 
     let file = open_file(path)?;
     let input_file = match format {

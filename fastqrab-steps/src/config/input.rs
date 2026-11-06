@@ -6,8 +6,7 @@ use toml_pretty_deser::{Visitor, prelude::*};
 
 use fastqrab_config::{SegmentLabel, StringOrVecString, default_comment_insert_char};
 use fastqrab_io::{
-    STDIN_MAGIC_PATH,
-    io::input::{InputOptions, PartialInputOptions},
+    STDIN_MAGIC_PATH, io::{input::{InputOptions, PartialInputOptions}},
 };
 
 fn is_default(opt: &InputOptions) -> bool {
@@ -42,6 +41,7 @@ pub struct Input {
     #[schemars(skip)]
     #[serde(skip_serializing)]
     pub structured: StructuredInput,
+
 }
 
 impl PartialInput {

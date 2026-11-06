@@ -111,7 +111,7 @@ pub fn apply_to_read_names_and_sequences(
     filename: impl AsRef<Path>,
     func: &mut impl FnMut(&[u8], &[u8]) -> Result<()>,
 ) -> Result<()> {
-    let input_file = open_input_file(filename.as_ref()).context("open_input_file")?;
+    let input_file = open_input_file(filename.as_ref(), None).context("open_input_file")?;
     drive_reads(
         input_file,
         &mut |name: &[u8], seq: &[u8], _qual: &[u8]| func(name, seq),

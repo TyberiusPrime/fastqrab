@@ -1,19 +1,28 @@
 use anyhow::{Context, Result};
 
-use fastqrab_io::io::{InputFiles, SegmentsCombined, open_input_file, total_file_size};
+use fastqrab_io::io::{
+    DetectedInputFormat, InputFiles, SegmentsCombined, open_input_file, total_file_size,
+};
+use indexmap::IndexMap;
 
 /// # Panics
 /// `Sgement_order` / segments mismatch
-pub fn open_input_files(input_config: &crate::config::Input) -> Result<InputFiles> {
+pub fn open_input_files(
+    input_config: &crate::config::Input,
+    input_format_per_segment: &IndexMap<String, DetectedInputFormat>,
+) -> Result<InputFiles> {
     match &input_config.structured {
         crate::config::StructuredInput::Interleaved {
             files,
             segment_order,
         } => {
+            let format = *input_format_per_segment
+                .get("--interleaved--")
+                .expect("Bug: Input format not set in first config verification.");
             let readers: Result<Vec<_>> = files
                 .iter()
                 .map(|x| {
-                    open_input_file(x).with_context(|| {
+                    open_input_file(x, Some(format)).with_context(|| {
                         format!("Problem in interleaved segment while opening '{x}'")
                     })
                 })
@@ -39,10 +48,13 @@ pub fn open_input_files(input_config: &crate::config::Input) -> Result<InputFile
                 let filenames = segment_files
                     .get(key)
                     .expect("Segment order / segments mismatch");
+                let format = *input_format_per_segment
+                    .get(key)
+                    .expect("Bug Input format for segment not set in initial validation");
                 let readers: Result<Vec<_>> = filenames
                     .iter()
                     .map(|x| {
-                        open_input_file(x).with_context(|| {
+                        open_input_file(x, Some(format)).with_context(|| {
                             format!("Problem in segment {key} while opening '{x}'")
                         })
                     })

@@ -111,7 +111,7 @@ pub struct Benchmark {
     pub molecule_count: usize,
 }
 
-#[derive(Debug, JsonSchema, Default)]
+#[derive(Debug, Default)]
 #[expect(
     dead_code,
     reason = "we currently only use gzip for multi thread considerations, but set them all for consistency"
@@ -121,6 +121,7 @@ struct InputFormatsObserved {
     fasta: bool,
     bam: bool,
     gzip: bool,
+    per_segment: IndexMap<String, DetectedInputFormat>,
 }
 
 #[derive(Debug)]
@@ -421,6 +422,7 @@ pub struct Config {
     #[tpd(skip)]
     #[schemars(skip)]
     pub input_declarations_per_transformation: Vec<Option<Vec<InputDeclaration>>>,
+
 }
 
 #[derive(Debug)]
@@ -438,6 +440,8 @@ pub struct CheckedConfig {
     /// (`Arc`) so the report metadata does not duplicate it in memory.
     pub raw_config: std::sync::Arc<str>,
     pub output_declarations_per_transformation: Vec<Option<Vec<OutputDeclaration>>>,
+
+    pub input_formats_detected: IndexMap<String, DetectedInputFormat>,
 }
 
 impl VerifyIn<TPDRoot> for PartialConfig {
@@ -2035,12 +2039,15 @@ impl Config {
             );
         }
         //no point in checking them if segment definition is broken
+        let mut input_formats_per_segment = None;
 
         let threading_configuration = if check_input_files_exist {
-            //todo :if we figure out a way to have VerifyIn do this only
+            //todo: if we figure out a way to have VerifyIn do this only
             // when requested, we could have better error messages.
             let input_formats_observed = self.check_input_format(&mut errors);
-            self.configure_multithreading(&input_formats_observed)
+            let r = self.configure_multithreading(&input_formats_observed);
+            input_formats_per_segment = Some(input_formats_observed.per_segment);
+            r
         } else {
             ThreadingConfiguration {
                 n_input_per_segment: std::num::NonZeroUsize::MIN,
@@ -2074,6 +2081,7 @@ impl Config {
             threading_configuration,
             raw_config: std::sync::Arc::from(""),
             output_declarations_per_transformation: self.output_declarations_per_transformation,
+            input_formats_detected: input_formats_per_segment.unwrap_or_else(||Default::default()),
         })
     }
 
@@ -2091,6 +2099,7 @@ impl Config {
         let mut saw_bam = false;
         let mut saw_fastq = false;
         let mut saw_gzip = false;
+        let mut per_segment = IndexMap::new();
 
         match &self.input.structured {
             StructuredInput::Interleaved { files, .. } => {
@@ -2108,6 +2117,8 @@ impl Config {
                         } else {
                             interleaved_format = Some(format);
                         }
+
+                        per_segment.insert("--interleaved--".to_string(), format);
                         match format {
                             DetectedInputFormat::Fastq => {
                                 saw_fastq = true;
@@ -2153,6 +2164,7 @@ impl Config {
                                 } else {
                                     segment_format = Some(format);
                                 }
+                                per_segment.insert(segment_name.clone(), format);
                                 match format {
                                     DetectedInputFormat::Fastq => {
                                         saw_fastq = true;
@@ -2213,6 +2225,7 @@ impl Config {
             fasta: saw_fasta,
             bam: saw_bam,
             gzip: saw_gzip,
+            per_segment,
         }
     }
 
