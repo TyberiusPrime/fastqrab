@@ -162,14 +162,14 @@ impl FastaParser {
         loop {
             let n = fill(reader, buf)?;
             if n == 0 {
-                state.finish_stream()?;
+                state.finish_stream();
                 *eof = true;
                 return Ok(ParseResult {
                     output: state.take_block(),
                     was_final: true,
                 });
             }
-            state.feed_chunk(&buf[..n])?;
+            state.feed_chunk(&buf[..n]);
             if state.has_block() {
                 return Ok(ParseResult {
                     output: state.take_block(),
@@ -271,14 +271,14 @@ impl FastaPods {
 
     /// Feed one decode chunk: complete the carried line, then split the rest on
     /// newlines, carrying the final partial line for the next chunk.
-    fn feed_chunk(&mut self, data: &[u8]) -> Result<()> {
+    fn feed_chunk(&mut self, data: &[u8]) {
         let mut body = data;
         if !self.carry.is_empty() {
             match memchr::memchr(b'\n', data) {
                 Some(nl) => {
                     let mut line = std::mem::take(&mut self.carry);
                     line.extend_from_slice(&data[..nl]);
-                    self.feed_line(&line)?;
+                    self.feed_line(&line);
                     line.clear();
                     self.carry = line; // reuse the allocation
                     body = &data[nl + 1..];
@@ -286,23 +286,22 @@ impl FastaPods {
                 None => {
                     // No newline in the whole chunk: still mid-line, keep carrying.
                     self.carry.extend_from_slice(data);
-                    return Ok(());
+                    return;
                 }
             }
         }
         let mut line_start = 0usize;
         for nl in memchr::memchr_iter(b'\n', body) {
-            self.feed_line(&body[line_start..nl])?;
+            self.feed_line(&body[line_start..nl]);
             line_start = nl + 1;
         }
         self.carry.extend_from_slice(&body[line_start..]);
-        Ok(())
     }
 
     /// Process one complete line (newline already removed). A `>` line closes the
     /// previous record and opens a new one; any other line appends to the current
     /// record's sequence.
-    fn feed_line(&mut self, raw: &[u8]) -> Result<()> {
+    fn feed_line(&mut self, raw: &[u8]) {
         let line = trim_end_ascii_whitespace(raw);
         if line.first() == Some(&b'>') {
             self.emit_current();
@@ -339,7 +338,6 @@ impl FastaPods {
             }
             self.cur_seq.extend_from_slice(line);
         }
-        Ok(())
     }
 
     /// Push the record currently being assembled (if any) into the columns.
@@ -357,13 +355,12 @@ impl FastaPods {
 
     /// End of stream: fold the final unterminated line (if any) and flush the last
     /// open record.
-    fn finish_stream(&mut self) -> Result<()> {
+    fn finish_stream(&mut self) {
         if !self.carry.is_empty() {
             let carry = std::mem::take(&mut self.carry);
-            self.feed_line(&carry)?;
+            self.feed_line(&carry);
         }
         self.emit_current();
-        Ok(())
     }
 
     /// A full block (≥ `target` completed records) is ready to emit.
@@ -423,7 +420,7 @@ impl FastaPodInner {
         loop {
             match self.bytes_rx.recv() {
                 Ok(chunk) => {
-                    self.state.feed_chunk(&chunk)?;
+                    self.state.feed_chunk(&chunk);
                     drop(chunk); // copied out; release the slot
                     if self.state.has_block() {
                         return Ok(ParseResult {
@@ -434,7 +431,7 @@ impl FastaPodInner {
                 }
                 Err(_) => {
                     // Ring closed: every chunk decoded. Finalize and join.
-                    self.state.finish_stream()?;
+                    self.state.finish_stream();
                     self.eof = true;
                     self.finish_threads()?;
                     return Ok(ParseResult {

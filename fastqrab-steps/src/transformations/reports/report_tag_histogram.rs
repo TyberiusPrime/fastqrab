@@ -46,10 +46,10 @@ impl HistogramData {
         }
     }
 
-    #[expect(
-        clippy::cast_possible_truncation,
-        reason = "precision loss for huge values is ok"
-    )]
+    // #[expect(
+    //     clippy::cast_possible_truncation,
+    //     reason = "precision loss for huge values is ok"
+    // )]
     pub fn add_from_column(&mut self, col: &TagColumn, idx: usize) {
         match col {
             TagColumn::Location(col) => {

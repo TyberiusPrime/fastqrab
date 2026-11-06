@@ -158,6 +158,10 @@ pub struct ThreadingConfiguration {
 /// express applied. Always build the schema through this — `schema_for!(Config)`
 /// alone is incomplete. (Fields that are merely optional use
 /// `#[schemars(with = "Option<...>")]` and need nothing here.)
+///
+/// # Panics
+///
+/// Should not panic unless the schema stops being an object
 #[must_use]
 pub fn config_schema() -> schemars::Schema {
     let mut schema = schemars::schema_for!(Config);
@@ -2081,7 +2085,7 @@ impl Config {
             threading_configuration,
             raw_config: std::sync::Arc::from(""),
             output_declarations_per_transformation: self.output_declarations_per_transformation,
-            input_formats_detected: input_formats_per_segment.unwrap_or_else(||Default::default()),
+            input_formats_detected: input_formats_per_segment.unwrap_or_else(Default::default),
         })
     }
 

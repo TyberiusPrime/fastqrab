@@ -78,8 +78,8 @@ impl TagUser for PartialTaggedVariant<PartialFillMissing> {
                         TagValueType::String
                     }
                 }
-                (Some(TagValueType::Location), Some(TagValueType::String))
-                | (Some(TagValueType::String), Some(TagValueType::Location))
+                // (Some(TagValueType::Location), Some(TagValueType::String))
+                // | (Some(TagValueType::String), Some(TagValueType::Location))
                 | _ //doesn't mater, will get rejected
                 =>  {
                     TagValueType::String

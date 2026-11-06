@@ -35,7 +35,7 @@ fn collect_accepted_tokens(value: &serde_json::Value, out: &mut HashSet<String>)
 }
 
 fn rust_files(dir: &Path, out: &mut Vec<PathBuf>) {
-    let entries = std::fs::read_dir(dir).unwrap();
+    let entries = std::fs::read_dir(dir).expect("Failed to read source dir");
     for entry in entries.flatten() {
         let path = entry.path();
         if path.is_dir() {
@@ -75,7 +75,7 @@ fn scan_tpd_aliases() -> Vec<(String, String)> {
 
     let mut found = Vec::new();
     for file in files {
-        let text = std::fs::read_to_string(&file).unwrap();
+        let text = std::fs::read_to_string(&file).expect("Failed to read source file");
         for line in text.lines() {
             // only attribute lines, to avoid matching `alias = "..."` in prose/code
             if !tpd_attr.is_match(line) {

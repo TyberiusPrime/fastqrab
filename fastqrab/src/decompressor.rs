@@ -467,8 +467,6 @@ fn apply_landlock(input: &std::path::Path) -> Result<()> {
         RulesetCreatedAttr,
     };
 
-    let abi = ABI::V1;
-
     // Under coverage instrumentation (cargo-llvm-cov sets LLVM_PROFILE_FILE), the
     // LLVM profiling runtime reads and writes a .profraw on exit (the default
     // `%m` online-merge pattern opens the existing file to merge counters
@@ -488,6 +486,8 @@ fn apply_landlock(input: &std::path::Path) -> Result<()> {
         } // cov:excl-line
         Ok(ruleset)
     }
+
+    let abi = ABI::V1;
 
     // Strict form: deny every read except `input`, and every write anywhere.
     // Building the `input` rule fails (EBADFD) when `input` doesn't resolve to

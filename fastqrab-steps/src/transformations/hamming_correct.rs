@@ -673,14 +673,14 @@ impl Step for HammingCorrect {
                                         .get_index(idx)
                                         .expect("seq_to_name index out of range");
                                     let bytes = name.as_bytes();
-                                    let s = match split {
+                                    match split {
                                         Some(split_char) => bytes
                                             .splitn(2, |&c| c == split_char)
                                             .next()
                                             .unwrap_or(bytes),
                                         None => bytes,
-                                    };
-                                    s
+                                    }
+                                    
                                 };
                                 let first = canonical_name(items[0]);
                                 let all_the_same =
@@ -838,7 +838,7 @@ impl Step for HammingCorrect {
                 for record in records {
                     writer.write_text_record(record.as_bytes())?;
                 }
-                let _ = writer.finish()?;
+                let () = writer.finish()?;
             }
             //assert that pre_match is empty
             if let Some(pre) = self.pre_match.as_ref()

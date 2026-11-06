@@ -1,7 +1,7 @@
 use anyhow::{Context, Result};
 
 use fastqrab_io::io::{
-    DetectedInputFormat, InputFiles, SegmentsCombined, input::detect_input_format, open_input_file,
+    DetectedInputFormat, InputFiles, SegmentsCombined, open_input_file,
     total_file_size,
 };
 use indexmap::IndexMap;
@@ -19,7 +19,7 @@ pub fn open_input_files(
         } => {
             // we need the optional format, since this is where we complain about
             // wrongly formatted files eventually
-            let format = input_format_per_segment.get("--interleaved--").map(|x| *x);
+            let format = input_format_per_segment.get("--interleaved--").copied();
             let readers: Result<Vec<_>> = files
                 .iter()
                 .map(|x| {
@@ -52,7 +52,7 @@ pub fn open_input_files(
 
                 // we need the optional format, since this is where we complain about
                 // wrongly formatted files eventually
-                let format = input_format_per_segment.get(key).map(|x| *x);
+                let format = input_format_per_segment.get(key).copied();
                 let readers: Result<Vec<_>> = filenames
                     .iter()
                     .map(|x| {

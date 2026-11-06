@@ -150,7 +150,7 @@ impl Step for OutputReport {
             && let Some(mut writer) = writer.lock().expect("lock poisoned").take()
         {
             writer.write_text_record(json.as_bytes())?;
-            let _ = writer.finish()?;
+            let () = writer.finish()?;
         }
 
         if let Some(writer) = &self.html_writer
@@ -158,7 +158,7 @@ impl Step for OutputReport {
         {
             let html = render_html_report(&json)?;
             writer.write_text_record(html.as_bytes())?;
-            let _ = writer.finish()?;
+            let () = writer.finish()?;
         }
 
         Ok(())

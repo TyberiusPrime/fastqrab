@@ -942,9 +942,8 @@ pub fn init_hamming_resonator(
 ) -> Result<HammingResonator, ValidationFailure> {
     let seqs: Vec<BString> = seq_to_name.keys().cloned().collect();
 
-    let resonator = HammingResonator::new(seqs, max_dist.into())
-        .expect("Hamming resonator failed to init? Unequal seq lengths?");
-    Ok(resonator)
+    HammingResonator::new(seqs, max_dist.into())
+        .map_err(|e| ValidationFailure::new(format!("Hamming resonator failed to init: {e}"), None))
 }
 
 /// Find out exactly what's the minimum number of bits to represent a number in binary

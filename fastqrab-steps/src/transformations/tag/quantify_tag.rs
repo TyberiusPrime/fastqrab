@@ -194,7 +194,7 @@ impl Step for QuantifyTag {
                 str_collector.into_iter().collect();
             let json = serde_json::to_string_pretty(&str_collector)?;
             writer.write_text_record(json.as_bytes())?;
-            let _ = writer.finish()?;
+            let () = writer.finish()?;
         }
         Ok(None)
     }

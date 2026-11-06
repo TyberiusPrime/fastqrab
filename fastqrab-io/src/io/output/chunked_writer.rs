@@ -937,7 +937,7 @@ impl ChunkPaths {
                         new_prefix.file_name().unwrap_or_default().to_string_lossy(),
                         suffix
                     ));
-                    ex::fs::rename(&path, &new_name).with_context(|| {
+                    ex::fs::rename(path, &new_name).with_context(|| {
                         //cov:excl-start
                         format!(
                             "Could not rename output chunk file from {} to {}",
@@ -1006,7 +1006,6 @@ enum ActiveSink {
 
 impl ChunkedRecordWriter {
     /// Construct, validating writability and opening the first chunk.
-    #[expect(clippy::items_after_statements, reason = "unix only use statements")]
     pub fn new(
         format: FileFormat,
         target: WriteTarget,
@@ -1174,7 +1173,7 @@ impl ChunkedRecordWriter {
                 if let Some(p) = c.path.take() {
                     let new_p = renames
                         .swap_remove(&p)
-                        .with_context(|| format!("No rename happend for {p:?}")) //cov:excl-line
+                        .with_context(|| format!("No rename happend for {}", p.display())) //cov:excl-line
                         .expect("rename missing for completed chunk")
                         .clone();
                     c.path = Some(new_p);

@@ -227,7 +227,7 @@ fn test_umi_correction() {
 }
 
 /// Regression test: `current` must be the *actual* base at this bp, not some
-/// garbage derived from OR-ing or XOR-ing with 0b11. Uses umi_length == 1 so
+/// garbage derived from OR-ing or XOR-ing with 0b11. Uses `umi_length` == 1 so
 /// there are no higher-order bits to mask off, making the true base's effect
 /// on which replacement gets (wrongly) skipped visible.
 #[test]
@@ -259,7 +259,7 @@ fn test_umi_correction_uses_actual_current_base() {
 
 /// Regression test: the mask/replacement shifts must move with `bp`. At
 /// bp == 0 (shift == 0) `<<` and `>>` coincide, so this only exercises bp > 0
-/// (umi_length == 2, correction needed on the higher-order base).
+/// (`umi_length` == 2, correction needed on the higher-order base).
 #[test]
 fn test_umi_correction_shifts_by_bp() {
     // x = 0b0101 (base0 = 1, base1 = 1). Correcting base1 (2 -> value 0b1001 = 9)

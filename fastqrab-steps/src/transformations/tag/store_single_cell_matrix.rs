@@ -761,7 +761,7 @@ impl Step for StoreSingleCellMatrix {
             .iter_mut()
         {
             if let Some(w) = writer.take() {
-                let _summary = w.finish()?;
+                w.finish()?;
             } // cov:excl-line
         }
 

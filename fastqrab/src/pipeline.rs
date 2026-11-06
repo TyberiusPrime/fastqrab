@@ -395,7 +395,6 @@ impl DemultiplexChain {
     }
 }
 
-#[expect(clippy::collapsible_if, reason = "obscures")]
 fn parse_and_send(
     readers: Vec<io::InputFile>,
     raw_tx: &crossbeam::channel::Sender<(FastQChunk, Option<usize>)>,

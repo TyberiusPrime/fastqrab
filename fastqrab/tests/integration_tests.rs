@@ -3800,7 +3800,6 @@ prefix = 'output'
     );
 }
 
-#[cfg(unix)]
 #[test]
 #[cfg(unix)]
 fn test_verify_failing_post_sh_is_detected() {
@@ -3850,7 +3849,6 @@ fn test_verify_failing_post_sh_is_detected() {
     );
 }
 
-#[cfg(unix)]
 #[test]
 #[cfg(unix)]
 fn test_verify_failing_test_sh_is_detected() {

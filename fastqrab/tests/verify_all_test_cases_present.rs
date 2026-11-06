@@ -93,9 +93,7 @@ fn verify_all_shell_scripts_pass_shellcheck() {
         PathBuf::from("../cookbooks"),
         PathBuf::from("tests"),
     ] {
-        if !search_dir.exists() {
-            panic!("Search dir not present {search_dir:?}");
-        }
+        assert!(search_dir.exists(), "Search dir not present {search_dir:?}");
 
         for entry in WalkDir::new(search_dir)
             .into_iter()

@@ -441,6 +441,7 @@ impl fmt::Debug for OptionalByte {
 /// rejected. A missing value passes through as missing, so a `#[tpd(with =
 /// "tpd_adapt_u8_from_byte_char_or_false")]` field can be required in `verify`
 /// via [`toml_pretty_deser::TomlValue::is_missing`].
+#[must_use]
 pub fn tpd_adapt_u8_from_byte_char_or_false(
     mut input: TomlValue<toml_edit::Item>,
 ) -> TomlValue<OptionalByte> {

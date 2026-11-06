@@ -318,7 +318,7 @@ impl Step for Inspect {
             }
         }
 
-        let _ = writer.finish()?;
+        let () = writer.finish()?;
         Ok(None)
     }
 }

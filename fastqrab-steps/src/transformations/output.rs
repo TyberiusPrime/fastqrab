@@ -260,13 +260,13 @@ impl RecordOutputState {
         for seg in self.segment_writers.iter_mut().flatten() {
             for (_tag, writer) in seg.iter_mut() {
                 let writer = writer.take().expect("Writer already taken?");
-                let _ = writer.finish()?;
+                let () = writer.finish()?;
             }
         }
         if let Some(interleaved) = self.interleaved_writers.as_mut() {
             for (_tag, writer) in interleaved.iter_mut() {
                 let writer = writer.take().expect("Writer already taken?");
-                let _ = writer.finish()?;
+                let () = writer.finish()?;
             }
         }
         Ok(())
@@ -469,38 +469,36 @@ pub(crate) fn verify_record_targets(
                 or remove both options to get the default behaviour."
                 .to_string(),
         );
-    } else {
-        if let Some(Some(interleave_order)) = interleave.as_mut() {
-            let failed = validate_segment_names(interleave_order, &valid, "interleave order");
-            if failed {
-                if matches!(interleave.state, TomlValueState::Ok) {
-                    interleave.state = TomlValueState::Nested;
-                }
-            } else if interleave_order.len() < 2 && !stdout_set {
-                interleave.state = TomlValueState::new_validation_failed(
-                    "Must contain at least two segments to interleave.",
-                );
-                interleave.help = Some(
-                    "Either add another segment to interleave, \
+    } else if let Some(Some(interleave_order)) = interleave.as_mut() {
+        let failed = validate_segment_names(interleave_order, &valid, "interleave order");
+        if failed {
+            if matches!(interleave.state, TomlValueState::Ok) {
+                interleave.state = TomlValueState::Nested;
+            }
+        } else if interleave_order.len() < 2 && !stdout_set {
+            interleave.state = TomlValueState::new_validation_failed(
+                "Must contain at least two segments to interleave.",
+            );
+            interleave.help = Some(
+                "Either add another segment to interleave, \
                     or remove interleave."
-                        .to_string(),
-                );
-            } else if let Some(Some(output_segments)) = output.as_ref() {
-                // no overlap between interleave and output
-                for segment in output_segments {
-                    if let Some(segment_str) = segment.as_ref()
-                        && let Some(found) = interleave_order
-                            .iter_mut()
-                            .find(|x| x.as_ref() == Some(segment_str))
-                    {
-                        let spans = vec![
-                            (found.span(), "Duplicate output & interleave".to_string()),
-                            (segment.span(), "Duplicate output & interleave".to_string()),
-                        ];
-                        found.state = TomlValueState::Custom { spans };
-                        found.help =
-                            Some("Remove from either 'interleave' or from 'output'".to_string());
-                    }
+                    .to_string(),
+            );
+        } else if let Some(Some(output_segments)) = output.as_ref() {
+            // no overlap between interleave and output
+            for segment in output_segments {
+                if let Some(segment_str) = segment.as_ref()
+                    && let Some(found) = interleave_order
+                        .iter_mut()
+                        .find(|x| x.as_ref() == Some(segment_str))
+                {
+                    let spans = vec![
+                        (found.span(), "Duplicate output & interleave".to_string()),
+                        (segment.span(), "Duplicate output & interleave".to_string()),
+                    ];
+                    found.state = TomlValueState::Custom { spans };
+                    found.help =
+                        Some("Remove from either 'interleave' or from 'output'".to_string());
                 }
             }
         }

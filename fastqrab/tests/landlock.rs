@@ -39,13 +39,20 @@ fn probe(
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
         .spawn()
-        .unwrap();
+        .expect("Failed to spawn decompressor");
 
     if let Some(data) = stdin {
-        child.stdin.take().unwrap().write_all(data).unwrap();
+        child
+            .stdin
+            .take()
+            .expect("Failed to take stdin of decompressor")
+            .write_all(data)
+            .expect("Failed to write data to stdin of decompressor");
     }
 
-    let output = child.wait_with_output().unwrap();
+    let output = child
+        .wait_with_output()
+        .expect("Decompressor child error return");
     assert!(
         output.status.success(),
         "probe process exited non-zero: {:?}\nstderr:\n{}",

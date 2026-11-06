@@ -67,7 +67,7 @@ pub fn take_singleton_writer(output_files: &mut StepOutputFiles, id: &str) -> Wr
 }
 
 pub fn finish_writer(handle: &WriterHandle) -> Result<()> {
-    let _summary = handle
+    handle
         .lock()
         .expect("lock poisoned")
         .take()

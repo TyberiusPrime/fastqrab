@@ -50,7 +50,7 @@ mod tests {
         writer
             .write_bam_record(&block.get(0), 0, segment_index, segment_count, &tags)
             .unwrap();
-        let _ = writer.finish().unwrap();
+        let () = writer.finish().unwrap();
 
         let path = dir.path().join("out.bam");
         let mut reader = bam::io::Reader::new(std::fs::File::open(&path).unwrap());

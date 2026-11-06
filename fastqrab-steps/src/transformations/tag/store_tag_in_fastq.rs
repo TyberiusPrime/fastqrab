@@ -305,7 +305,7 @@ impl Step for StoreTagInFastQ {
             .expect("lock poisoned")
             .iter_mut()
         {
-            let _ = writer.take().expect("Should have had writer?!").finish()?;
+            let () = writer.take().expect("Should have had writer?!").finish()?;
         }
         Ok(None)
     }
