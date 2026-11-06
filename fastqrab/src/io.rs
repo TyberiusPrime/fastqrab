@@ -1,7 +1,8 @@
 use anyhow::{Context, Result};
 
 use fastqrab_io::io::{
-    DetectedInputFormat, InputFiles, SegmentsCombined, open_input_file, total_file_size,
+    DetectedInputFormat, InputFiles, SegmentsCombined, input::detect_input_format, open_input_file,
+    total_file_size,
 };
 use indexmap::IndexMap;
 
@@ -16,13 +17,13 @@ pub fn open_input_files(
             files,
             segment_order,
         } => {
-            let format = *input_format_per_segment
-                .get("--interleaved--")
-                .expect("Bug: Input format not set in first config verification.");
+            // we need the optional format, since this is where we complain about
+            // wrongly formatted files eventually
+            let format = input_format_per_segment.get("--interleaved--").map(|x| *x);
             let readers: Result<Vec<_>> = files
                 .iter()
                 .map(|x| {
-                    open_input_file(x, Some(format)).with_context(|| {
+                    open_input_file(x, format).with_context(|| {
                         format!("Problem in interleaved segment while opening '{x}'")
                     })
                 })
@@ -48,13 +49,14 @@ pub fn open_input_files(
                 let filenames = segment_files
                     .get(key)
                     .expect("Segment order / segments mismatch");
-                let format = *input_format_per_segment
-                    .get(key)
-                    .expect("Bug Input format for segment not set in initial validation");
+
+                // we need the optional format, since this is where we complain about
+                // wrongly formatted files eventually
+                let format = input_format_per_segment.get(key).map(|x| *x);
                 let readers: Result<Vec<_>> = filenames
                     .iter()
                     .map(|x| {
-                        open_input_file(x, Some(format)).with_context(|| {
+                        open_input_file(x, format).with_context(|| {
                             format!("Problem in segment {key} while opening '{x}'")
                         })
                     })
