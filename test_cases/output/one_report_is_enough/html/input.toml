@@ -1,5 +1,5 @@
 [input]
-    read1 = 'input_read1.fq'
+    the_read_1 = 'input_read1.fq'
 
 
 [[step]]

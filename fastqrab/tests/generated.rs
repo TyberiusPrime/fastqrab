@@ -3100,6 +3100,17 @@ fn test_cases_x_output_x_one_report_is_enough_x_html() {
 
 #[test]
 
+fn test_cases_x_output_x_one_report_is_enough_x_interleaved() {
+    println!("Test case is in: test_cases/output/one_report_is_enough/interleaved");
+    run_test(
+        std::path::Path::new("../test_cases/output/one_report_is_enough/interleaved"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
 fn test_cases_x_output_x_one_report_is_enough_x_json() {
     println!("Test case is in: test_cases/output/one_report_is_enough/json");
     run_test(

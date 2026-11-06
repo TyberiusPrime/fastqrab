@@ -1,0 +1,23 @@
+# Interleaved input: a single file holds both segments, whose names are
+# listed in `interleaved` (in definition order). The report is keyed by those
+# names, so the HTML template must pick the segments up from `interleaved`
+# rather than assuming a fixed read1/read2/index1/index2 set.
+[input]
+    reads = 'input_interleaved.fq'
+    interleaved = ['readA', 'readB']
+
+[[step]]
+    action = 'Report'
+    name = 'xyz'
+    count = true
+    base_statistics = true
+    duplicate_count_per_read = true
+    length_distribution = true
+
+[output]
+    prefix = "output"
+
+[[step]]
+    action = "OutputReport"
+    json = false
+    html = true
