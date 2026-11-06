@@ -8,15 +8,15 @@
     <script type="application/json" id='data'>
     {
   "__": {
-    "version": "0.9.1",
-    "cwd": "/home/user/single_step",
+    "version": "_IGNORED_",
+    "cwd": "_IGNORED_",
     "input_files": {
       "interleaved": null,
       "read1": [
         "input_read1.fq"
       ]
     },
-    "repository": "https://tyberiusprime.github.io/fastqrab/"
+    "repository": "_IGNORED_"
   },
   "test_histogram": {
     "histogram": {
@@ -29,9 +29,9 @@
     }
   },
   "run_info": {
-    "program_version": "0.9.1",
-    "input_toml": "[input]\n    read1 = 'input_read1.fq'\n\n# Extract first 5 bases and store as tag\n[[step]]\n    action = 'ExtractRegex'\n    source = 'name:read1'\n    query = '^Read[123]'\n    out_label = 'prefix_5'\n\n[[step]]\n    action = 'Report'\n    name = 'test_histogram'\n    count = false\n    tag_histograms = ['prefix_5']\n\n[output]\n    prefix = \"output\"\n\n[[step]]\n    action = \"OutputReport\"\n    json = true\n    html = true\n",
-    "working_directory": "/home/user/single_step"
+    "program_version": "_IGNORED_",
+    "input_toml": "_IGNORED_",
+    "working_directory": "_IGNORED_"
   },
   "report_order": [
     "test_histogram"
@@ -318,7 +318,7 @@
 
       function format_input_files(input) {
         const entries = {
-          Interleaved: input.interleaved,
+          Interleaved: input.interleaved == true,
         };
         if (input.read1) {
           entries["Read1"] = input.read1.join(", ");

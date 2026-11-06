@@ -8,8 +8,8 @@
     <script type="application/json" id='data'>
     {
   "__": {
-    "version": "0.8.1",
-    "cwd": "/home/user/output",
+    "version": "_IGNORED_",
+    "cwd": "_IGNORED_",
     "input_files": {
       "interleaved": null,
       "read1": [
@@ -19,7 +19,7 @@
         "input_read1.fq"
       ]
     },
-    "repository": "https://tyberiusprime.github.io/fastqrab/"
+    "repository": "_IGNORED_"
   },
   "rep": {
     "multiplexed": {
@@ -35,9 +35,9 @@
     }
   },
   "run_info": {
-    "program_version": "0.8.1",
-    "input_toml": "options.accept_duplicate_files = true\n[input]\n    read1 = 'input_read1.fq'\n    read2 = 'input_read1.fq'\n\n[[step]]\n    action = 'ExtractRegion'\n    anchor = \"Start\"\n    source = \"read1\"\n    start = 0\n    len = 2\n    out_label = 'barcode'\n\n\n[[step]]\n  action = \"AssignToReference\"\n  barcodes = 'barcodes'\n  in_label='barcode'\n  out_label='refs'\n  max_hamming_distance =0\n\n[[step]]\n    action = 'Demultiplex'\n    in_label = 'refs'\n    output_unmatched = true\n    barcodes = 'barcodes'\n\n[barcodes.barcodes]\n    GG = 'sample-2' # rev order please\n    AA = 'sample-1'\n\n\n[[step]]\n  action = 'Report'\n  name = 'rep'\n\n[output]\n    prefix = 'output'\n    output = []\n    interleave = ['read1', 'read2']\n    report_html=true\n    format = 'bam'\n\n    [output.bam]\n        tag_to_reference.references_from_barcodes = \"barcodes\"\n        tag_to_reference.tag=\"refs\"\n        merge_demultiplexed = true\n",
-    "working_directory": "/home/user/output"
+    "program_version": "_IGNORED_",
+    "input_toml": "_IGNORED_",
+    "working_directory": "_IGNORED_"
   },
   "report_order": [
     "rep"
@@ -324,7 +324,7 @@
 
       function format_input_files(input) {
         const entries = {
-          Interleaved: input.interleaved,
+          Interleaved: input.interleaved == true,
         };
         if (input.read1) {
           entries["Read1"] = input.read1.join(", ");

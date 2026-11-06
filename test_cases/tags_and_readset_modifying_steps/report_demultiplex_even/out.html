@@ -1475,7 +1475,7 @@
 
       function format_input_files(input) {
         const entries = {
-          Interleaved: input.interleaved,
+          Interleaved: input.interleaved == true,
         };
         if (input.read1) {
           entries["Read1"] = input.read1.join(", ");
