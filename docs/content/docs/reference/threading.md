@@ -6,7 +6,7 @@ not-a-transformation: true
 ---
 # Multithreading considerations
 
-Mbf-fastq-processor is inherently multi-threaded, and strives
+fastqrab is inherently multi-threaded, and strives
 to make full use of your machine's cores.
 
 Usually, you should not need to influence the thread counts.
@@ -18,7 +18,7 @@ changing thread counts.
 
 ## Threading architecture
 
-Mbf-fastq-processor runs the following thread stack for a (non-interleaved configuration):
+fastqrab runs the following thread stack (for a non-interleaved configuration):
 
 ```
 [decompression / reader threads]
@@ -45,15 +45,12 @@ Our benchmarking suggests that speed gains after 5 threads are
 essentially non existent. For interleaved configuration,
 segment count is 1. 
 
-Note that if this ends up being one, rapidgzip is disabled, 
-since at one core it's slower than the single core gzip library we're using.
-
 
 ### Parser threads
 We have one thread per segment (exactly one thread for interleaved input).
 
 ### Combining therad
-Exactly one (or zero if interleaved input). Very light weight computationally. 
+Exactly one (or zero if interleaved input). Very light weight computationally.
 
 ### Work pool
 
@@ -84,8 +81,4 @@ it's also not going to slow things down much.
 
 ## Reports
 The TOML representation in JSON reports reflects the actually used cores.
-
-
-
-
 

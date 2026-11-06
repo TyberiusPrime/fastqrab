@@ -132,7 +132,6 @@ These knobs are required when the corresponding file types are present and ignor
     read1 = ["reads.fasta"]
 
 [input.options]
-    use_rapidgzip = true          # boolean, defaults to 'automatic'
     threads_per_segment = 1       # (optional) how many threads to use for decompression. 
     fasta_fake_quality = 'a'      # required for FASTA inputs: synthetic Phred score to apply to every base. Used verbatim without further shifting.
     bam_include_mapped = true     # required for BAM inputs: include reads with a reference assignment
@@ -140,8 +139,6 @@ These knobs are required when the corresponding file types are present and ignor
 	read_comment_character = ' '       # defaults to ' '. The character seperating read name from the 'read comment'.
 ```
 
-- `use use_rapidgzip` - whether to decompress gzip with our parallel decompressor.
-  See the [rapidgzip section](#rapidgzip).
 - `threads_per_segment` - see [threading]({{< relref "docs/reference/threading.md" >}}).
 - `fasta_fake_quality` accepts a byte character or a number and is used verbatim. Stick to Phred ('!'/33 = worst).
   The value must be supplied whenever any FASTA source is detected.
