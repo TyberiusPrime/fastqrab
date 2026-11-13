@@ -21,6 +21,9 @@
 
 Merges paired-end reads from two segments by detecting their overlap and resolving mismatches.
 
+To keep both reads, trimmed to just their overlap, see
+[TrimToOverlap]({{< relref "docs/reference/modification-steps/TrimToOverlap.md" >}}).
+
 Eventually will support multiple algorithms. Currently supports the ['fastp'](https://github.com/OpenGene/fastp) algorithm.
 
 ## How it works

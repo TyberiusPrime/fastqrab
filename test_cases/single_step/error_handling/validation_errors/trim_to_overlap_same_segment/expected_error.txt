@@ -1,0 +1,26 @@
+Error Details ==
+Error 1/1
+   ╭─config.toml
+   ┆
+ 5 │ [[step]]
+ 6 │     action = 'TrimToOverlap'
+   ┆              ───────┬───────
+   ┆                     │
+   ┆                     ╰──────── In this step
+   ┆
+ 7 │     algorithm = 'Fastp'
+ 8 │     min_overlap = 10
+ 9 │     max_mismatch_rate = 0.2
+10 │     max_mismatch_count = 5
+11 │     reverse_complement_segment2 = true
+12 │     segment1 = 'read1'
+   ┆                ───┬───
+   ┆                   │
+   ┆                   ╰──── Must be different from segment2
+13 │     segment2 = 'read1'
+   ┆                ───┬───
+   ┆                   │
+   ┆                   ╰──── Must be different from segment1
+───╯
+Hint: Available segments: read1, read2
+      See https://doc_url.example/version-stripped-from-test/docs/redirects/TrimToOverlap

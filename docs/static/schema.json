@@ -595,6 +595,12 @@
             "keep_tag": {
               "type": "boolean"
             },
+            "if_tag": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
             "action": {
               "type": "string",
               "const": "TrimAtTag"
@@ -670,6 +676,57 @@
             "action": {
               "type": "string",
               "const": "MergeReads"
+            }
+          },
+          "required": [
+            "action"
+          ]
+        },
+        {
+          "description": "Trim paired reads to their overlap (the `MergeReads` overlap, without merging)",
+          "type": "object",
+          "properties": {
+            "algorithm": {
+              "description": "Algorithm to use for overlap detection",
+              "$ref": "#/$defs/Algorithm"
+            },
+            "min_overlap": {
+              "description": "Minimum overlap length required (suggested: 30, minimum: 5)",
+              "type": "integer",
+              "format": "uint",
+              "minimum": 0
+            },
+            "max_mismatch_rate": {
+              "description": "Maximum allowed mismatch rate (0.0 to 1.0, suggested: 0.2)",
+              "type": "number",
+              "format": "double"
+            },
+            "max_mismatch_count": {
+              "description": "Maximum allowed absolute number of mismatches (suggested: 5)",
+              "type": "integer",
+              "format": "uint",
+              "minimum": 0
+            },
+            "reverse_complement_segment2": {
+              "description": "Whether segment2 is reverse complemented for the overlap search\n(the read itself stays as is)",
+              "type": "boolean"
+            },
+            "out_label": {
+              "description": "Optional bool tag: true if an overlap was found (and the reads trimmed to it)",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "segment1": {
+              "type": "string"
+            },
+            "segment2": {
+              "type": "string"
+            },
+            "action": {
+              "type": "string",
+              "const": "TrimToOverlap"
             }
           },
           "required": [
@@ -3126,6 +3183,18 @@
         },
         "keep_tag": {
           "type": "boolean"
+        },
+        "if_tag": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "if_label": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
       },
       "required": [
@@ -3234,6 +3303,59 @@
         "max_mismatch_rate",
         "max_mismatch_count",
         "no_overlap_strategy",
+        "reverse_complement_segment2",
+        "segment1",
+        "segment2"
+      ]
+    },
+    "TrimToOverlap": {
+      "description": "Trim paired reads to their overlap (the `MergeReads` overlap, without merging)",
+      "type": "object",
+      "properties": {
+        "algorithm": {
+          "description": "Algorithm to use for overlap detection",
+          "$ref": "#/$defs/Algorithm"
+        },
+        "min_overlap": {
+          "description": "Minimum overlap length required (suggested: 30, minimum: 5)",
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0
+        },
+        "max_mismatch_rate": {
+          "description": "Maximum allowed mismatch rate (0.0 to 1.0, suggested: 0.2)",
+          "type": "number",
+          "format": "double"
+        },
+        "max_mismatch_count": {
+          "description": "Maximum allowed absolute number of mismatches (suggested: 5)",
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0
+        },
+        "reverse_complement_segment2": {
+          "description": "Whether segment2 is reverse complemented for the overlap search\n(the read itself stays as is)",
+          "type": "boolean"
+        },
+        "out_label": {
+          "description": "Optional bool tag: true if an overlap was found (and the reads trimmed to it)",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "segment1": {
+          "type": "string"
+        },
+        "segment2": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "algorithm",
+        "min_overlap",
+        "max_mismatch_rate",
+        "max_mismatch_count",
         "reverse_complement_segment2",
         "segment1",
         "segment2"

@@ -12,6 +12,7 @@ Trim the read at the position of a tag.
     in_label = "mytag" # must be a location tag
     direction = "Start" # or "End"
     keep_tag = false # if true, the tag sequence is kept in the read
+    if_tag = "other_tag" # (optional) only trim reads where this tag is true (prefix with ! to negate)
 ```
 
 This transformation trims the read at the position where a tag was found.

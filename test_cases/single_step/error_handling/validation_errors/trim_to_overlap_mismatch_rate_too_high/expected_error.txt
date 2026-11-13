@@ -1,0 +1,19 @@
+Error Details ==
+Error 1/1
+  ╭─config.toml
+  ┆
+5 │ [[step]]
+6 │     action = 'TrimToOverlap'
+  ┆              ───────┬───────
+  ┆                     │
+  ┆                     ╰──────── In this step
+  ┆
+7 │     algorithm = 'Fastp'
+8 │     min_overlap = 10
+9 │     max_mismatch_rate = 1.0
+  ┆                         ─┬─
+  ┆                          │
+  ┆                          ╰── Invalid value. Must be in [0.0..1.0)
+──╯
+Hint: Set a valid value >= 0 and < 1.0.
+      See https://doc_url.example/version-stripped-from-test/docs/redirects/TrimToOverlap

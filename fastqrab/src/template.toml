@@ -762,6 +762,7 @@
 #    direction = "Start" # or "End"
 #    keep_tag = false # if true, the tag sequence is kept in the read,
 #                     # swaps whether we trim at the start/end of the tag.
+#    if_tag = "other_tag" # (optional) only trim reads where this tag is true
 
 # ==== ConvertQuality ====
 ## Convert quality scores between different encodings.
@@ -865,6 +866,23 @@
 ##   - "concatenate": joins segment1 + spacer + processed segment2 into segment1, empties segment2
 ## If out_label specified: creates boolean tag (true=merged, false=not merged)
 ## See documentation for full algorithmic details
+
+# ==== TrimToOverlap ====
+## Trim paired-end reads to their overlap (the same overlap MergeReads finds),
+## keeping both reads (with their mismatches) instead of merging them.
+# [[step]]
+#    action = "TrimToOverlap"
+#    reverse_complement_segment2 = true    # RC segment2 for the overlap search (suggested: true)
+#                                          # (segment2 itself keeps its orientation)
+#    segment1 = "read1"                    # First segment (suggested: "read1")
+#    segment2 = "read2"                    # Second segment (suggested: "read2")
+#    algorithm = "Fastp"                   # Overlap detection, as in MergeReads
+#    min_overlap = 30                      # Minimum overlap length required (suggested: 30)
+#    max_mismatch_rate = 0.2               # Maximum allowed mismatch rate 0.0-1.0 (suggested: 0.2)
+#    max_mismatch_count = 5                # Maximum allowed absolute mismatches (suggested: 5)
+##    out_label = "was_trimmed"            # (optional) bool tag: true if an overlap was found
+##
+## No overlap (or one shorter than min_overlap): both reads are left unchanged.
 
 # ==== Swap ====
 ## Swap segments, optionally conditionally based on a tag

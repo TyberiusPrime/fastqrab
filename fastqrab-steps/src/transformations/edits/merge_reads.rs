@@ -77,38 +77,13 @@ impl VerifyIn<PartialConfig> for PartialMergeReads {
     where
         Self: Sized + toml_pretty_deser::Visitor,
     {
-        self.segment1.validate_segment(parent);
-        self.segment2.validate_segment(parent);
-        if let Some(segment1) = self.segment1.as_ref()
-            && let Some(segment2) = self.segment2.as_ref()
-            && let MustAdapt::PostVerify(index1) = segment1
-            && let MustAdapt::PostVerify(index2) = segment2
-            && index1 == index2
-        {
-            let spans = vec![
-                (
-                    self.segment1.span(),
-                    "Must be different from segment2".to_string(),
-                ),
-                (
-                    self.segment2.span(),
-                    "Must be different from segment1".to_string(),
-                ),
-            ];
-            self.segment1 = TomlValue::new_custom(
-                Some(MustAdapt::PostVerify(*index1)),
-                spans,
-                Some(&format!(
-                    "Available segments: {}",
-                    parent
-                        .input
-                        .as_ref()
-                        .expect("Expected input_def to be present at this point. Bug in config validation")
-                        .get_segment_order()
-                        .join(", ")
-                )),
-            );
-        }
+        verify_overlap_parameters(
+            &mut self.segment1,
+            &mut self.segment2,
+            &mut self.min_overlap,
+            &mut self.max_mismatch_rate,
+            parent,
+        );
 
         if let Some(no_overlap_strategy) = self.no_overlap_strategy.as_ref()
             && let Some(concatenate_spacer) = self.concatenate_spacer.as_ref()
@@ -123,26 +98,6 @@ impl VerifyIn<PartialConfig> for PartialMergeReads {
             ));
         }
 
-        self.min_overlap.verify(|v| {
-            if *v < 5 {
-                Err(ValidationFailure::new(
-                    "Invalid value. Must be >= 5",
-                    Some("Set a valid value."),
-                ))
-            } else {
-                Ok(())
-            }
-        });
-        self.max_mismatch_rate.verify(|v| {
-            if *v < 0.0 || *v >= 1.0 {
-                Err(ValidationFailure::new(
-                    "Invalid value. Must be in [0.0..1.0)",
-                    Some("Set a valid value >= 0 and < 1.0."),
-                ))
-            } else {
-                Ok(())
-            }
-        });
         self.spacer_quality_char.verify(|opt_v| {
             if let Some(v) = opt_v
                 && !(33..=126).contains(v)
@@ -157,6 +112,69 @@ impl VerifyIn<PartialConfig> for PartialMergeReads {
 
         Ok(())
     }
+}
+
+/// Shared by `MergeReads` and `TrimToOverlap`: two distinct, existing segments,
+/// `min_overlap` >= 5 and `max_mismatch_rate` in [0..1).
+pub(super) fn verify_overlap_parameters(
+    segment1: &mut TomlValue<MustAdapt<String, SegmentIndex>>,
+    segment2: &mut TomlValue<MustAdapt<String, SegmentIndex>>,
+    min_overlap: &mut TomlValue<usize>,
+    max_mismatch_rate: &mut TomlValue<f64>,
+    parent: &PartialConfig,
+) {
+    segment1.validate_segment(parent);
+    segment2.validate_segment(parent);
+    if let Some(MustAdapt::PostVerify(index1)) = segment1.as_ref()
+        && let Some(MustAdapt::PostVerify(index2)) = segment2.as_ref()
+        && index1 == index2
+    {
+        let spans = vec![
+            (
+                segment1.span(),
+                "Must be different from segment2".to_string(),
+            ),
+            (
+                segment2.span(),
+                "Must be different from segment1".to_string(),
+            ),
+        ];
+        *segment1 = TomlValue::new_custom(
+            Some(MustAdapt::PostVerify(*index1)),
+            spans,
+            Some(&format!(
+                "Available segments: {}",
+                parent
+                    .input
+                    .as_ref()
+                    .expect(
+                        "Expected input_def to be present at this point. Bug in config validation"
+                    )
+                    .get_segment_order()
+                    .join(", ")
+            )),
+        );
+    }
+    min_overlap.verify(|v| {
+        if *v < 5 {
+            Err(ValidationFailure::new(
+                "Invalid value. Must be >= 5",
+                Some("Set a valid value."),
+            ))
+        } else {
+            Ok(())
+        }
+    });
+    max_mismatch_rate.verify(|v| {
+        if *v < 0.0 || *v >= 1.0 {
+            Err(ValidationFailure::new(
+                "Invalid value. Must be in [0.0..1.0)",
+                Some("Set a valid value >= 0 and < 1.0."),
+            ))
+        } else {
+            Ok(())
+        }
+    });
 }
 
 impl TagUser for PartialTaggedVariant<PartialMergeReads> {
@@ -409,7 +427,7 @@ fn merge_reads(
     reason = "max_mismatch_rate is 0..=1"
 )]
 #[expect(clippy::nonminimal_bool, reason = "it's clearer this way")]
-fn find_best_overlap_fastp(
+pub(super) fn find_best_overlap_fastp(
     seq1: &[u8],
     seq2: &[u8], //must already have been reverse complemented
     min_overlap: usize,

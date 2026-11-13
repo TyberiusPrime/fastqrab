@@ -370,7 +370,9 @@ mod tests {
             let adapter = &full[..alen];
             // low-entropy alphabet in half the rounds to provoke near-matches
             let alphabet: &[u8] = if round % 2 == 0 { b"ACGT" } else { b"AG" };
-            let mut read: Vec<u8> = (0..next(60)).map(|_| alphabet[next(alphabet.len())]).collect();
+            let mut read: Vec<u8> = (0..next(60))
+                .map(|_| alphabet[next(alphabet.len())])
+                .collect();
             if next(2) == 0 {
                 // plant a mutated adapter copy
                 let at = next(read.len() + 1);

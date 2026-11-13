@@ -243,9 +243,29 @@ prefix = "output"
         | has_report_step;
     let if_tag_present =
         extracted_section.contains("if_tag =") && !extracted_section.contains("#if_tag =");
+    // An if_tag naming something other than 'mytag' gets its own bool tag (below),
+    // so 'mytag' stays free for e.g. a location in_label.
+    let if_tag_name: Option<String> = extracted_section
+        .lines()
+        .map(str::trim_start)
+        .filter(|line| line.starts_with("if_tag"))
+        .find_map(|line| {
+            let after = &line[line.find(['\'', '"'])? + 1..];
+            let name = &after[..after.find(['\'', '"'])?];
+            Some(name.trim_start_matches('!').to_string())
+        })
+        .filter(|name| name != "mytag")
+        // the example creates the tag itself
+        .filter(|name| {
+            !extracted_section.lines().any(|line| {
+                line.trim_start().starts_with("out_label")
+                    && (line.contains(&format!("\"{name}\""))
+                        || line.contains(&format!("'{name}'")))
+            })
+        });
     let needs_bool_tag = actions.iter().any(|a| {
         a == "FilterByBoolTag" || a == "SwapConditional" || a == "ReverseComplementConditional"
-    }) | if_tag_present;
+    }) | (if_tag_present && if_tag_name.is_none());
     let needs_generic_tag = actions
         .iter()
         .any(|a| ACTIONS_REQUIRING_GENERIC_TAG.contains(&a.as_str()));
@@ -339,6 +359,22 @@ prefix = "output"
             "#,
         );
         created_tags.insert("mytag".to_string());
+    }
+
+    if let Some(name) = &if_tag_name {
+        write!(
+            &mut config,
+            r#"
+                [[step]]
+                    action = "TagDuplicates"
+                    source = "read1"
+                    out_label = "{name}"
+                    false_positive_rate = 0.0
+                    seed = 42
+            "#
+        )
+        .unwrap();
+        created_tags.insert(name.clone());
     }
 
     // For fragments that use in_label, create a generic tag with that name

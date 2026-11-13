@@ -5089,6 +5089,65 @@ fn test_cases_x_single_step_x_edits_x_swap_x_unequal_lengths_conditional() {
 
 #[test]
 
+fn test_cases_x_single_step_x_edits_x_trim_at_tag_x_if_tag() {
+    println!("Test case is in: test_cases/single_step/edits/trim_at_tag/if_tag");
+    run_test(
+        std::path::Path::new("../test_cases/single_step/edits/trim_at_tag/if_tag"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_edits_x_trim_at_tag_x_if_tag_negated() {
+    println!("Test case is in: test_cases/single_step/edits/trim_at_tag/if_tag_negated");
+    run_test(
+        std::path::Path::new("../test_cases/single_step/edits/trim_at_tag/if_tag_negated"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_edits_x_trim_to_overlap_x_generated_no_revcomp() {
+    println!("Test case is in: test_cases/single_step/edits/trim_to_overlap/generated_no_revcomp");
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/edits/trim_to_overlap/generated_no_revcomp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_edits_x_trim_to_overlap_x_generated_revcomp() {
+    println!("Test case is in: test_cases/single_step/edits/trim_to_overlap/generated_revcomp");
+    run_test(
+        std::path::Path::new("../test_cases/single_step/edits/trim_to_overlap/generated_revcomp"),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_edits_x_trim_to_overlap_x_location_tags_survive() {
+    println!("Test case is in: test_cases/single_step/edits/trim_to_overlap/location_tags_survive");
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/edits/trim_to_overlap/location_tags_survive",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
 fn test_cases_x_single_step_x_edits_x_uppercase_location_tag() {
     println!("Test case is in: test_cases/single_step/edits/uppercase_location_tag");
     run_test(
@@ -7698,6 +7757,53 @@ fn test_cases_x_single_step_x_error_handling_x_validation_errors_x_merge_reads_m
     run_test(
         std::path::Path::new(
             "../test_cases/single_step/error_handling/validation_errors/merge_reads_mismatch_rate_too_low",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_error_handling_x_validation_errors_x_trim_to_overlap_min_overlap_too_low()
+ {
+    println!(
+        "Test case is in: test_cases/single_step/error_handling/validation_errors/trim_to_overlap_min_overlap_too_low"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/error_handling/validation_errors/trim_to_overlap_min_overlap_too_low",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_error_handling_x_validation_errors_x_trim_to_overlap_mismatch_rate_too_high()
+ {
+    println!(
+        "Test case is in: test_cases/single_step/error_handling/validation_errors/trim_to_overlap_mismatch_rate_too_high"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/error_handling/validation_errors/trim_to_overlap_mismatch_rate_too_high",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_error_handling_x_validation_errors_x_trim_to_overlap_same_segment() {
+    println!(
+        "Test case is in: test_cases/single_step/error_handling/validation_errors/trim_to_overlap_same_segment"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/error_handling/validation_errors/trim_to_overlap_same_segment",
         ),
         "input.toml",
         1,

@@ -15,6 +15,9 @@
 
 
 ### New steps
+- New step: [TrimToOverlap]({{< relref "docs/reference/modification-steps/TrimToOverlap.md" >}}) - trim read pairs to their (MergeReads) overlap without merging
+- [TrimAtTag]({{< relref "docs/reference/modification-steps/TrimAtTag.md" >}}) supports `if_tag`
+
 - New step: [ExtractAdapterLikeFastP]({{< relref "docs/reference/tag-steps/extract/ExtractAdapterLikeFastP.md" >}}) - fastp compatible adapter detection
 
 - New step: [ValidateReadNamesPrintable]({{< relref "docs/reference/validation-steps/ValidateReadNamesPrintable.md" >}})

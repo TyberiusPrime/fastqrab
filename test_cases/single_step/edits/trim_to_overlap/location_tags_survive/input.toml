@@ -1,0 +1,55 @@
+# read1 = insert[0:20], read2 = rc(insert[10:30]) -> overlap insert[10:20],
+# read1 keeps [10:20], read2 keeps [10:20].
+# Location tags captured before the trim are lifted into the trimmed reads.
+[input]
+    read1 = 'input_read1.fq'
+    read2 = 'input_read2.fq'
+
+[[step]]
+    action = 'ExtractRegion'
+    source = 'read1'
+    start = 12
+    len = 3
+    anchor = 'Start'
+    out_label = 'inside1'
+
+[[step]]
+    action = 'ExtractRegion'
+    source = 'read2'
+    start = 15
+    len = 2
+    anchor = 'Start'
+    out_label = 'inside2'
+
+[[step]]
+    action = 'TrimToOverlap'
+    algorithm = 'Fastp'
+    min_overlap = 5
+    max_mismatch_rate = 0.2
+    max_mismatch_count = 2
+    reverse_complement_segment2 = true
+    segment1 = 'read1'
+    segment2 = 'read2'
+
+[[step]]
+    action = 'StoreTagsInTable'
+    in_labels = ['inside1', 'inside2']
+
+# trimming at the (lifted) tags shows where they ended up
+[[step]]
+    action = 'TrimAtTag'
+    in_label = 'inside1'
+    direction = 'Start'
+    keep_tag = true
+
+[[step]]
+    action = 'TrimAtTag'
+    in_label = 'inside2'
+    direction = 'End'
+    keep_tag = true
+
+[output]
+    prefix = 'output'
+
+[[step]]
+    action = 'OutputFASTQ'

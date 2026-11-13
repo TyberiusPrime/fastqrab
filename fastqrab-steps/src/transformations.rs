@@ -324,6 +324,7 @@ pub enum Transformation {
     _ChangeCase(edits::_ChangeCase), // public interface is Lowercase/Uppercase
     TrimAtTag(edits::TrimAtTag),
     MergeReads(edits::MergeReads),
+    TrimToOverlap(edits::TrimToOverlap),
     //
     #[tpd(alias = "TagMatches")]
     Matches(filters::TagMatches),

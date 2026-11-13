@@ -874,6 +874,23 @@ fn benchmark_key_steps(c: &mut Criterion) {
             thread_count,
         ),
         BenchmarkConfig::new(
+            "TrimToOverlap",
+            r#"[[step]]
+    action = "TrimToOverlap"
+    min_overlap = 10
+    algorithm = "Fastp"
+    max_mismatch_rate = 0.2
+    max_mismatch_count = 5
+    reverse_complement_segment2 = true
+    segment1 = "read1"
+    segment2 = "read2"
+    out_label = "was_trimmed"
+    "#,
+            molecule_count,
+            thread_count,
+        )
+        .set_paired(true),
+        BenchmarkConfig::new(
             "MergeReads",
             r#"[[step]]
     action = "MergeReads"

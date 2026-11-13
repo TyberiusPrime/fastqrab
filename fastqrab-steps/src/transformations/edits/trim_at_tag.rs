@@ -20,6 +20,9 @@ pub struct TrimAtTag {
     in_label: TagLabel,
     direction: Direction,
     keep_tag: bool,
+    #[tpd(default)]
+    #[tpd(alias = "if_label")]
+    if_tag: Option<ConditionalTagLabel>,
 }
 
 impl TagUser for PartialTaggedVariant<PartialTrimAtTag> {
@@ -30,7 +33,10 @@ impl TagUser for PartialTaggedVariant<PartialTrimAtTag> {
     ) -> Option<TagUsageInfo<'_>> {
         if let Some(inner) = self.toml_value.value.as_mut() {
             Some(TagUsageInfo {
-                used_tags: vec![inner.in_label.to_used_tag(&[TagValueType::Location])],
+                used_tags: vec![
+                    inner.in_label.to_used_tag(&[TagValueType::Location]),
+                    inner.if_tag.to_used_tag(&[]),
+                ],
                 ..Default::default()
             })
         } else {
@@ -46,6 +52,10 @@ impl Step for TrimAtTag {
         _input_info: &InputInfo,
         _demultiplex_info: &OptDemultiplex,
     ) -> anyhow::Result<(FastQBlocksCombined, bool)> {
+        let condition = self
+            .if_tag
+            .as_ref()
+            .map(|tag| get_bool_vec_from_tag(&block, tag));
         let col = block
             .tags
             .get(&self.in_label)
@@ -62,7 +72,13 @@ impl Step for TrimAtTag {
         // before the mutable `member_mut` below.
         let segment = &block.segments[segment_index];
         let windows: Vec<Option<(usize, usize)>> = (0..row_count)
-            .map(|row| self.keep_window(segment, col, row))
+            .map(|row| {
+                if condition.as_ref().is_some_and(|c| !c[row]) {
+                    None // if_tag false: leave the read untouched
+                } else {
+                    self.keep_window(segment, col, row)
+                }
+            })
             .collect();
 
         // Pass 2: narrow each read to its window. `resize` is a no-copy narrowing

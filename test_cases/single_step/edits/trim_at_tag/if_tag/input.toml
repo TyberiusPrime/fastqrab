@@ -1,0 +1,30 @@
+# only reads with an even read_no are trimmed (r4 has no adapter)
+[input]
+    read1 = 'input_read1.fq'
+
+[[step]]
+    action = 'ExtractIUPAC'
+    anchor = 'Anywhere'
+    out_label = 'adapter'
+    segment = 'read1'
+    search = 'AGATC'
+    max_mismatches = 0
+
+[[step]]
+    action = 'EvalExpression'
+    out_label = 'even'
+    expression = 'read_no % 2 == 0'
+    result_type = 'bool'
+
+[[step]]
+    action = 'TrimAtTag'
+    in_label = 'adapter'
+    direction = 'End'
+    keep_tag = false
+    if_tag = 'even'
+
+[output]
+    prefix = 'output'
+
+[[step]]
+    action = 'OutputFASTQ'

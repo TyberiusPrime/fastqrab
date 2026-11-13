@@ -1112,6 +1112,7 @@ Trim read at tag position.
     in_label = 'adapter'           # TYPE: existing tag, REQUIRED
     direction = 'End'              # TYPE: 'Start'|'End', REQUIRED
     keep_tag = false               # TYPE: bool, REQUIRED
+    if_tag = 'other_tag'           # TYPE: bool tag (prefix '!' to negate), OPTIONAL
 ```
 
 **direction='End', keep_tag=false**: Trim everything from tag start to read end
@@ -1251,6 +1252,28 @@ Merge overlapping paired-end reads.
 ```
 
 **CONSTRAINT**: At least one of `max_mismatch_rate` or `max_mismatch_count` required
+
+### TrimToOverlap
+
+Trim both reads of a pair to their overlap (as found by MergeReads), without merging.
+Mismatches are preserved, segment2 keeps its orientation, location tags survive.
+
+**USE WHEN**: Keeping only the bases covered by both R1 and R2
+
+```toml
+[[step]]
+    action = 'TrimToOverlap'
+    segment1 = 'read1'             # TYPE: segment name, REQUIRED
+    segment2 = 'read2'             # TYPE: segment name, REQUIRED
+    reverse_complement_segment2 = true  # TYPE: bool, REQUIRED (only for the overlap search)
+    algorithm = 'Fastp'            # TYPE: 'Fastp', REQUIRED
+    min_overlap = 30               # TYPE: usize >= 5, REQUIRED
+    max_mismatch_rate = 0.2        # TYPE: float [0.0-1.0), REQUIRED
+    max_mismatch_count = 5         # TYPE: usize, REQUIRED
+    out_label = 'was_trimmed'      # TYPE: string, OPTIONAL (bool tag: overlap found)
+```
+
+No overlap → reads unchanged (tag false).
 
 ### Swap 
 
@@ -1962,6 +1985,12 @@ TagDuplicates → FilterByTag (keep_or_remove='Remove')
 
 ```
 MergeReads
+```
+
+### Task: Keep only the overlapping part of paired-end reads
+
+```
+TrimToOverlap
 ```
 
 ### Task: Quality report only

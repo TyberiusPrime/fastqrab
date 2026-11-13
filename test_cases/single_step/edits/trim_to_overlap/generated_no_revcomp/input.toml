@@ -1,0 +1,26 @@
+# expected output derived from the read construction in
+# dev/scripts/generate_trim_to_overlap_test_cases.py
+[input]
+    read1 = 'input_read1.fq'
+    read2 = 'input_read2.fq'
+
+[[step]]
+    action = 'TrimToOverlap'
+    algorithm = 'Fastp'
+    min_overlap = 10
+    max_mismatch_rate = 0.2
+    max_mismatch_count = 2
+    reverse_complement_segment2 = false
+    segment1 = 'read1'
+    segment2 = 'read2'
+    out_label = 'was_trimmed'
+
+[[step]]
+    action = 'StoreTagsInTable'
+    in_labels = ['was_trimmed']
+
+[output]
+    prefix = 'output'
+
+[[step]]
+    action = 'OutputFASTQ'

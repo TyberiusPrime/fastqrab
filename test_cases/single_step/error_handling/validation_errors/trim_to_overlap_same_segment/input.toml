@@ -1,0 +1,19 @@
+[input]
+    read1 = 'input_read1.fq'
+    read2 = 'input_read2.fq'
+
+[[step]]
+    action = 'TrimToOverlap'
+    algorithm = 'Fastp'
+    min_overlap = 10
+    max_mismatch_rate = 0.2
+    max_mismatch_count = 5
+    reverse_complement_segment2 = true
+    segment1 = 'read1'
+    segment2 = 'read1'
+
+[output]
+    prefix = 'output'
+
+[[step]]
+    action = 'OutputFASTQ'

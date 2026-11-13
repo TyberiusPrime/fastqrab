@@ -12,6 +12,7 @@ mod rename;
 mod reverse_complement;
 mod swap;
 mod trim_at_tag;
+mod trim_to_overlap;
 mod truncate;
 mod uppercase;
 
@@ -28,6 +29,7 @@ pub use rename::{PartialRename, Rename};
 pub use reverse_complement::{PartialReverseComplement, ReverseComplement};
 pub use swap::{PartialSwap, Swap};
 pub use trim_at_tag::{PartialTrimAtTag, TrimAtTag};
+pub use trim_to_overlap::{PartialTrimToOverlap, TrimToOverlap};
 pub use truncate::{PartialTruncate, Truncate};
 pub use uppercase::{PartialUppercase, Uppercase};
 
