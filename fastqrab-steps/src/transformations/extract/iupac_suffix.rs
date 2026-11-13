@@ -47,7 +47,7 @@ impl VerifyIn<PartialConfig> for PartialIUPACSuffix {
                 if lengths.iter().any(|x| *x != lengths[0]) {
                     Err(ValidationFailure::new(
                         "Search patterns must all be of the same length".to_string(),
-                        Some(format!("Observed: {:?}", lengths)),
+                        Some(format!("Observed: {lengths:?}")),
                     ))
                 } else {
                     Ok(())
@@ -65,7 +65,7 @@ impl VerifyIn<PartialConfig> for PartialIUPACSuffix {
                     && *v
                         > search
                             .iter()
-                            .map(|y| y.as_ref().map(|z| z.len()).unwrap_or(0))
+                            .map(|y| y.as_ref().map_or(0, |z| z.len()))
                             .min()
                             .unwrap_or(0)
                 {
