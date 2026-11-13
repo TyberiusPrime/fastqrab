@@ -426,7 +426,6 @@ pub struct Config {
     #[tpd(skip)]
     #[schemars(skip)]
     pub input_declarations_per_transformation: Vec<Option<Vec<InputDeclaration>>>,
-
 }
 
 #[derive(Debug)]

@@ -680,7 +680,6 @@ impl Step for HammingCorrect {
                                             .unwrap_or(bytes),
                                         None => bytes,
                                     }
-                                    
                                 };
                                 let first = canonical_name(items[0]);
                                 let all_the_same =

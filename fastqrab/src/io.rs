@@ -1,8 +1,7 @@
 use anyhow::{Context, Result};
 
 use fastqrab_io::io::{
-    DetectedInputFormat, InputFiles, SegmentsCombined, open_input_file,
-    total_file_size,
+    DetectedInputFormat, InputFiles, SegmentsCombined, open_input_file, total_file_size,
 };
 use indexmap::IndexMap;
 
