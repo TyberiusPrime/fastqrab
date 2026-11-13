@@ -13,6 +13,7 @@ use fastqrab_config::{
 };
 use fastqrab_io::io::FastQBlocksCombined;
 
+mod adapter_like_fastp;
 mod iupac;
 mod iupac_suffix;
 mod iupac_with_indel;
@@ -26,6 +27,7 @@ mod regions;
 mod regions_of_low_quality;
 pub mod tag;
 
+pub use adapter_like_fastp::{AdapterLikeFastP, PartialAdapterLikeFastP};
 pub use iupac::{IUPAC, PartialIUPAC};
 pub use iupac_suffix::{IUPACSuffix, PartialIUPACSuffix};
 pub use iupac_with_indel::{IUPACWithIndel, PartialIUPACWithIndel};

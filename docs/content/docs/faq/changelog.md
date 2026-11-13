@@ -15,6 +15,8 @@
 
 
 ### New steps
+- New step: [ExtractAdapterLikeFastP]({{< relref "docs/reference/tag-steps/extract/ExtractAdapterLikeFastP.md" >}}) - fastp compatible adapter detection
+
 - New step: [ValidateReadNamesPrintable]({{< relref "docs/reference/validation-steps/ValidateReadNamesPrintable.md" >}})
 
 - New step: [CompareStringTags]({{< relref "docs/redirects/CompareStringTags.md" >}})

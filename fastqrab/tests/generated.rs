@@ -5644,6 +5644,37 @@ fn test_cases_x_single_step_x_error_handling_x_extraction_x_eval_expr_x_len_from
 
 #[test]
 
+fn test_cases_x_single_step_x_error_handling_x_extraction_x_extract_adapter_like_fastp_invalid_base()
+ {
+    println!(
+        "Test case is in: test_cases/single_step/error_handling/extraction/extract_adapter_like_fastp_invalid_base"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/error_handling/extraction/extract_adapter_like_fastp_invalid_base",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_error_handling_x_extraction_x_extract_adapter_like_fastp_too_short() {
+    println!(
+        "Test case is in: test_cases/single_step/error_handling/extraction/extract_adapter_like_fastp_too_short"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/error_handling/extraction/extract_adapter_like_fastp_too_short",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
 fn test_cases_x_single_step_x_error_handling_x_extraction_x_extract_base_content_absolute_with_ignore()
  {
     println!(
@@ -8206,6 +8237,261 @@ fn test_cases_x_single_step_x_extraction_x_edits_altering_tag_locations_x_trim_q
     run_test(
         std::path::Path::new(
             "../test_cases/single_step/extraction/edits_altering_tag_locations/trim_quality_start",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_extraction_x_extract_adapter_like_fastp_x_adapter_10bp() {
+    println!(
+        "Test case is in: test_cases/single_step/extraction/extract_adapter_like_fastp/adapter_10bp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/extraction/extract_adapter_like_fastp/adapter_10bp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_extraction_x_extract_adapter_like_fastp_x_adapter_13bp() {
+    println!(
+        "Test case is in: test_cases/single_step/extraction/extract_adapter_like_fastp/adapter_13bp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/extraction/extract_adapter_like_fastp/adapter_13bp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_extraction_x_extract_adapter_like_fastp_x_adapter_16bp() {
+    println!(
+        "Test case is in: test_cases/single_step/extraction/extract_adapter_like_fastp/adapter_16bp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/extraction/extract_adapter_like_fastp/adapter_16bp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_extraction_x_extract_adapter_like_fastp_x_adapter_33bp() {
+    println!(
+        "Test case is in: test_cases/single_step/extraction/extract_adapter_like_fastp/adapter_33bp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/extraction/extract_adapter_like_fastp/adapter_33bp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_extraction_x_extract_adapter_like_fastp_x_adapter_6bp() {
+    println!(
+        "Test case is in: test_cases/single_step/extraction/extract_adapter_like_fastp/adapter_6bp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/extraction/extract_adapter_like_fastp/adapter_6bp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_extraction_x_extract_adapter_like_fastp_x_large_x_adapter_10bp() {
+    println!(
+        "Test case is in: test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_10bp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_10bp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_extraction_x_extract_adapter_like_fastp_x_large_x_adapter_11bp() {
+    println!(
+        "Test case is in: test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_11bp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_11bp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_extraction_x_extract_adapter_like_fastp_x_large_x_adapter_12bp() {
+    println!(
+        "Test case is in: test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_12bp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_12bp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_extraction_x_extract_adapter_like_fastp_x_large_x_adapter_13bp() {
+    println!(
+        "Test case is in: test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_13bp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_13bp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_extraction_x_extract_adapter_like_fastp_x_large_x_adapter_15bp() {
+    println!(
+        "Test case is in: test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_15bp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_15bp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_extraction_x_extract_adapter_like_fastp_x_large_x_adapter_16bp() {
+    println!(
+        "Test case is in: test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_16bp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_16bp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_extraction_x_extract_adapter_like_fastp_x_large_x_adapter_33bp() {
+    println!(
+        "Test case is in: test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_33bp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_33bp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_extraction_x_extract_adapter_like_fastp_x_large_x_adapter_4bp() {
+    println!(
+        "Test case is in: test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_4bp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_4bp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_extraction_x_extract_adapter_like_fastp_x_large_x_adapter_6bp() {
+    println!(
+        "Test case is in: test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_6bp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_6bp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_extraction_x_extract_adapter_like_fastp_x_large_x_adapter_7bp() {
+    println!(
+        "Test case is in: test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_7bp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_7bp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_extraction_x_extract_adapter_like_fastp_x_large_x_adapter_8bp() {
+    println!(
+        "Test case is in: test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_8bp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/extraction/extract_adapter_like_fastp/large/adapter_8bp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_extraction_x_extract_adapter_like_fastp_x_large_x_nextera_19bp() {
+    println!(
+        "Test case is in: test_cases/single_step/extraction/extract_adapter_like_fastp/large/nextera_19bp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/extraction/extract_adapter_like_fastp/large/nextera_19bp",
         ),
         "input.toml",
         1,

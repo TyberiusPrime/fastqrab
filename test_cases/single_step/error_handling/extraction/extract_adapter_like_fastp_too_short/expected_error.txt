@@ -1,0 +1,21 @@
+Error Details ==
+Error 1/1
+  ╭─config.toml
+  ┆
+4 │ [[step]]
+5 │     action = 'ExtractAdapterLikeFastP'
+  ┆              ────────────┬────────────
+  ┆                          │
+  ┆                          ╰───────────── In this step
+  ┆
+6 │     out_label = 'adapter'
+7 │     adapter = 'AGA'
+  ┆               ──┬──
+  ┆                 │
+  ┆                 ╰─── Adapter must be at least 4 bases long
+──╯
+Hint: fastp rejects adapters of length <= 3
+      See https://doc_url.example/version-stripped-from-test/docs/redirects/ExtractAdapterLikeFastP
+      Or run: `fastqrab template ExtractAdapterLikeFastP` for more information.
+
+

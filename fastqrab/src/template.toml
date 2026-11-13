@@ -134,6 +134,17 @@
 #                       # the start of the adapter
 #    max_mismatches = 0 # (optional, defaults to 0) How many mismatches to accept
 
+# ==== ExtractAdapterLikeFastP ====
+## Find a 3' adapter exactly the way fastp does (single --adapter_sequence).
+## Stores adapter start..read end as a location tag - use TrimAtTag to remove it.
+## (fastp drops reads that are empty after trimming - use FilterEmpty to match)
+
+# [[step]]
+#    action = "ExtractAdapterLikeFastP"
+#    out_label = "adapter"
+#    adapter = "AGATCGGAAGAGCACACGTCTGAACTCCAGTCA" # A, C, G, T only, >= 4 bases
+#    segment = "read1"   # Any of your input segments (default: read1)
+
 # ==== ExtractRegex ====
 ## Extract a regexp result. Stores an empty string if not found.
 # [[step]]

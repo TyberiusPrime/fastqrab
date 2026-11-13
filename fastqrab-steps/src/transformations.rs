@@ -377,6 +377,7 @@ pub enum Transformation {
     ExtractLongestPolyX(extract::LongestPolyX),
     ExtractPolyTail(extract::PolyTail),
     ExtractIUPACSuffix(extract::IUPACSuffix),
+    ExtractAdapterLikeFastP(extract::AdapterLikeFastP),
     ExtractLowQualityStart(extract::LowQualityStart),
     ExtractLowQualityEnd(extract::LowQualityEnd),
     // // bool tags

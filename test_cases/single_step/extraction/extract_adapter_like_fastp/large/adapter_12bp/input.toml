@@ -1,0 +1,28 @@
+# expected positions derived from fastp 1.4.0 output via
+# dev/scripts/generate_fastp_adapter_test_cases.py
+# fastp -i input_read1.fq -o out.fq -a AGATCGGAAGAG -Q -L -G --dimer_max_len -1 -w 1
+[input]
+    read1 = 'input_read1.fq.zst' # symlink to ../shared_input_read1.fq.zst
+
+[[step]]
+    action = 'ExtractAdapterLikeFastP'
+    out_label = 'adapter'
+    adapter = 'AGATCGGAAGAG'
+
+# position fastp cuts the read at, -1 if no adapter was found
+[[step]]
+    action = 'EvalExpression'
+    out_label = 'pos'
+    expression = 'adapter * (len_read1 - len_adapter) - (adapter == 0)'
+    result_type = 'Numeric'
+
+[[step]]
+    action = 'StoreTagsInTable'
+    infix = 'positions'
+    in_labels = ['pos']
+    include_read_name = false
+    compression = 'Zstd'
+    compression_level = 5
+
+[output]
+    prefix = 'output'

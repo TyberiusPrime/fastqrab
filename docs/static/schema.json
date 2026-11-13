@@ -1638,6 +1638,28 @@
           ]
         },
         {
+          "description": "Find a 3' adapter exactly the way fastp (v1.4.0) does it for a single\n`--adapter_sequence` (`AdapterTrimmer::trimBySequence`, `matchReq = 4`),\nand store the adapter region (adapter start..read end) as a location tag.",
+          "type": "object",
+          "properties": {
+            "segment": {
+              "type": "string"
+            },
+            "out_label": {
+              "type": "string"
+            },
+            "adapter": {
+              "type": "string"
+            },
+            "action": {
+              "type": "string",
+              "const": "ExtractAdapterLikeFastP"
+            }
+          },
+          "required": [
+            "action"
+          ]
+        },
+        {
           "description": "Turn low quality start's of reads into a tag",
           "type": "object",
           "properties": {
@@ -4296,6 +4318,35 @@
         "min_length",
         "max_mismatches",
         "search"
+      ]
+    },
+    "AdapterLikeFastP": {
+      "description": "Find a 3' adapter exactly the way fastp (v1.4.0) does it for a single\n`--adapter_sequence` (`AdapterTrimmer::trimBySequence`, `matchReq = 4`),\nand store the adapter region (adapter start..read end) as a location tag.",
+      "type": "object",
+      "properties": {
+        "segment": {
+          "type": "string"
+        },
+        "out_label": {
+          "type": "string"
+        },
+        "adapter": {
+          "type": "string"
+        },
+        "search": {
+          "type": "string"
+        },
+        "query": {
+          "type": "string"
+        },
+        "pattern": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "segment",
+        "out_label",
+        "adapter"
       ]
     },
     "LowQualityStart": {

@@ -1,0 +1,16 @@
+[input]
+    read1 = 'sample_data/ten_reads.fq'
+
+[[step]]
+    action = 'ExtractAdapterLikeFastP'
+    out_label = 'adapter'
+    adapter = 'AGATNGG'
+
+[[step]]
+  action = 'forgetalltags'
+
+[output]
+    prefix = "output"
+
+[[step]]
+    action = "OutputFASTQ"

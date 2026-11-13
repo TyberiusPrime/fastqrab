@@ -435,6 +435,23 @@ Trim adapter at end with partial matching.
     out_label = 'adapter'          # TYPE: string, REQUIRED
 ```
 
+### ExtractAdapterLikeFastP
+
+Find 3' adapter exactly like fastp (single `--adapter_sequence`).
+
+**USE WHEN**: Reproducing fastp's adapter trimming
+
+```toml
+[[step]]
+    action = 'ExtractAdapterLikeFastP'
+    segment = 'read1'              # TYPE: segment name, DEFAULT: 'read1'
+    adapter = 'AGATCGGAAGAGC'      # TYPE: string (ACGT only, >= 4 bases), REQUIRED
+    out_label = 'adapter'          # TYPE: string, REQUIRED
+```
+
+Follow with `TrimAtTag` (direction = 'End', keep_tag = false) and `FilterEmpty`
+to get fastp's output.
+
 ### ExtractRegex
 
 Extract using regular expression.

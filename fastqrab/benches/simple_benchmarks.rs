@@ -614,6 +614,19 @@ fn benchmark_key_steps(c: &mut Criterion) {
             thread_count,
         ),
         BenchmarkConfig::new(
+            "ExtractAdapterLikeFastP",
+            r#"[[step]]
+    action = "ExtractAdapterLikeFastP"
+    segment = "read1"
+    adapter = "AGATCGGAAGAGCACACGTCTGAACTCCAGTCA"
+    out_label = "adapter"
+
+[[step]]
+    action = "ForgetAllTags""#,
+            molecule_count,
+            thread_count,
+        ),
+        BenchmarkConfig::new(
             "ExtractIUPACWithIndel",
             r#"[[step]]
     action = "ExtractIUPACWithIndel"
