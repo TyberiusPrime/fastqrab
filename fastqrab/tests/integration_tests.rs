@@ -55,7 +55,7 @@ fn test_cookbooks_in_sync() {
             eprintln!("  Extra in generated code: {extra_in_generated:?}");
         }
         eprintln!("\n  Run: python3 dev/updated_generated.sh");
-        panic!("Cookbooks out of sync. Run dev/update_generated.sh to regenerate.");
+        panic!("Cookbooks out of sync. Run dev/ci/update_generated.sh to regenerate.");
         //cov:excl-stop
     }
 }

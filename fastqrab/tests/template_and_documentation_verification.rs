@@ -1686,7 +1686,7 @@ fn test_every_link_docs_target_has_a_redirect_page() {
         if !redirects_dir.join(format!("{name}.md")).exists() {
             //cov:excl-start
             missing.push(format!(
-                "  {name}  (transformation — run dev/update_generated.sh)"
+                "  {name}  (transformation — run dev/ci/update_generated.sh)"
             ));
             //cov:excl-stop
         }
@@ -1712,7 +1712,7 @@ fn test_every_link_docs_target_has_a_redirect_page() {
         missing.dedup();
         panic!(
             "The following link_docs() targets have no redirect page in docs/reference/redirects/.\n\
-             Run dev/update_generated.sh to regenerate, or add a doc page for missing entries:\n{}",
+             Run dev/ci/update_generated.sh to regenerate, or add a doc page for missing entries:\n{}",
             missing.join("\n")
         );
         //cov:excl-stop

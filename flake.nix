@@ -337,6 +337,10 @@
 
             cargo test --release
 
+            # replays docs/content/docs/development/custom_transformation.md
+            # (ignored by default - it builds fastqrab several times)
+            cargo test --release --test custom_transformation_guide -- --ignored
+
           '';
 
         };
