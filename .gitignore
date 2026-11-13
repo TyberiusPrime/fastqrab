@@ -19,7 +19,7 @@ perf.data.old
 flamegraph.svg
 html/output.html
 sample_data/large/*
-*/__pycache__/*
+**/__pycache__/*
 profile.json
 profile.json.gz
 /*.html
@@ -53,4 +53,3 @@ dev/fuzz/**/output
 dev/fuzz/**/logs
 dev/fuzz/**/core
 core.*
-**/__pycache__/**
