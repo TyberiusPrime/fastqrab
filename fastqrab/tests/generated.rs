@@ -5124,6 +5124,36 @@ fn test_cases_x_single_step_x_edits_x_trim_to_overlap_x_generated_no_revcomp() {
 
 #[test]
 
+fn test_cases_x_single_step_x_edits_x_trim_to_overlap_x_generated_read_through_no_revcomp() {
+    println!(
+        "Test case is in: test_cases/single_step/edits/trim_to_overlap/generated_read_through_no_revcomp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/edits/trim_to_overlap/generated_read_through_no_revcomp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
+fn test_cases_x_single_step_x_edits_x_trim_to_overlap_x_generated_read_through_revcomp() {
+    println!(
+        "Test case is in: test_cases/single_step/edits/trim_to_overlap/generated_read_through_revcomp"
+    );
+    run_test(
+        std::path::Path::new(
+            "../test_cases/single_step/edits/trim_to_overlap/generated_read_through_revcomp",
+        ),
+        "input.toml",
+        1,
+    );
+}
+
+#[test]
+
 fn test_cases_x_single_step_x_edits_x_trim_to_overlap_x_generated_revcomp() {
     println!("Test case is in: test_cases/single_step/edits/trim_to_overlap/generated_revcomp");
     run_test(

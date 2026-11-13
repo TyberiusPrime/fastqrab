@@ -690,6 +690,10 @@
               "description": "Algorithm to use for overlap detection",
               "$ref": "#/$defs/Algorithm"
             },
+            "trim_mode": {
+              "description": "`AnyOverlap`: trim whenever the reads overlap.\n`ReadThrough`: only trim reads that run into adapter (like fastp)",
+              "$ref": "#/$defs/TrimMode"
+            },
             "min_overlap": {
               "description": "Minimum overlap length required (suggested: 30, minimum: 5)",
               "type": "integer",
@@ -712,7 +716,7 @@
               "type": "boolean"
             },
             "out_label": {
-              "description": "Optional bool tag: true if an overlap was found (and the reads trimmed to it)",
+              "description": "Optional bool tag: true if the reads were trimmed\n(`AnyOverlap`: an overlap was found, `ReadThrough`: the reads ran into adapter)",
               "type": [
                 "string",
                 "null"
@@ -3308,6 +3312,21 @@
         "segment2"
       ]
     },
+    "TrimMode": {
+      "description": "When to trim a pair to its overlap",
+      "oneOf": [
+        {
+          "description": "Trim whenever the reads overlap, keeping exactly the overlapping bases",
+          "type": "string",
+          "const": "AnyOverlap"
+        },
+        {
+          "description": "Trim only when the reads run past the fragment end into adapter\n(segment2 starts before segment1 = fragment shorter than the reads).\nReproduces fastp's overlap based adapter trimming:\nboth reads keep their first `overlap length` bases.",
+          "type": "string",
+          "const": "ReadThrough"
+        }
+      ]
+    },
     "TrimToOverlap": {
       "description": "Trim paired reads to their overlap (the `MergeReads` overlap, without merging)",
       "type": "object",
@@ -3315,6 +3334,10 @@
         "algorithm": {
           "description": "Algorithm to use for overlap detection",
           "$ref": "#/$defs/Algorithm"
+        },
+        "trim_mode": {
+          "description": "`AnyOverlap`: trim whenever the reads overlap.\n`ReadThrough`: only trim reads that run into adapter (like fastp)",
+          "$ref": "#/$defs/TrimMode"
         },
         "min_overlap": {
           "description": "Minimum overlap length required (suggested: 30, minimum: 5)",
@@ -3338,7 +3361,7 @@
           "type": "boolean"
         },
         "out_label": {
-          "description": "Optional bool tag: true if an overlap was found (and the reads trimmed to it)",
+          "description": "Optional bool tag: true if the reads were trimmed\n(`AnyOverlap`: an overlap was found, `ReadThrough`: the reads ran into adapter)",
           "type": [
             "string",
             "null"
@@ -3353,6 +3376,7 @@
       },
       "required": [
         "algorithm",
+        "trim_mode",
         "min_overlap",
         "max_mismatch_rate",
         "max_mismatch_count",

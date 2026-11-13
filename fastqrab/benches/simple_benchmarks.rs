@@ -877,6 +877,7 @@ fn benchmark_key_steps(c: &mut Criterion) {
             "TrimToOverlap",
             r#"[[step]]
     action = "TrimToOverlap"
+    trim_mode = "AnyOverlap"
     min_overlap = 10
     algorithm = "Fastp"
     max_mismatch_rate = 0.2

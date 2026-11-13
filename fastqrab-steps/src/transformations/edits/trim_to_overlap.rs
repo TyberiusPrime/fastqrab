@@ -4,6 +4,20 @@ use super::merge_reads::{Algorithm, find_best_overlap_fastp, verify_overlap_para
 use crate::transformations::prelude::*;
 use fastqrab_dna::dna::reverse_complement;
 
+/// When to trim a pair to its overlap
+#[derive(Clone, Copy, PartialEq, Eq, JsonSchema)]
+#[tpd]
+#[derive(Debug)]
+pub enum TrimMode {
+    /// Trim whenever the reads overlap, keeping exactly the overlapping bases
+    AnyOverlap,
+    /// Trim only when the reads run past the fragment end into adapter
+    /// (segment2 starts before segment1 = fragment shorter than the reads).
+    /// Reproduces fastp's overlap based adapter trimming:
+    /// both reads keep their first `overlap length` bases.
+    ReadThrough,
+}
+
 /// Trim paired reads to their overlap (the `MergeReads` overlap, without merging)
 #[derive(Clone, JsonSchema)]
 #[tpd]
@@ -11,6 +25,10 @@ use fastqrab_dna::dna::reverse_complement;
 pub struct TrimToOverlap {
     /// Algorithm to use for overlap detection
     pub algorithm: Algorithm,
+
+    /// `AnyOverlap`: trim whenever the reads overlap.
+    /// `ReadThrough`: only trim reads that run into adapter (like fastp)
+    pub trim_mode: TrimMode,
 
     /// Minimum overlap length required (suggested: 30, minimum: 5)
     pub min_overlap: usize,
@@ -25,7 +43,8 @@ pub struct TrimToOverlap {
     /// (the read itself stays as is)
     pub reverse_complement_segment2: bool,
 
-    /// Optional bool tag: true if an overlap was found (and the reads trimmed to it)
+    /// Optional bool tag: true if the reads were trimmed
+    /// (`AnyOverlap`: an overlap was found, `ReadThrough`: the reads ran into adapter)
     pub out_label: Option<TagLabel>,
 
     #[schemars(with = "String")]
@@ -82,14 +101,30 @@ type OverlapWindows = ((usize, usize), (usize, usize));
 impl TrimToOverlap {
     /// Convert an overlap (as reported by `find_best_overlap_fastp`, with
     /// `offset` = position of the (processed) read2 start in read1) into
-    /// keep-windows for both reads.
+    /// keep-windows for both reads - or None if this mode doesn't trim it.
     #[expect(clippy::cast_sign_loss, reason = "sign checked")]
     fn windows(
+        trim_mode: TrimMode,
         len2: usize,
         offset: isize,
         overlap_len: usize,
         reverse_complement_segment2: bool,
-    ) -> OverlapWindows {
+    ) -> Option<OverlapWindows> {
+        if trim_mode == TrimMode::ReadThrough {
+            if offset >= 0 {
+                return None; // regular overlap, no adapter read-through
+            }
+            // fastp (AdapterTrimmer::trimByOverlapAnalysis) keeps the first
+            // overlap_len bases of both reads. That equals the overlap unless
+            // read1 ends before read2's (processed) end, in which case read2
+            // keeps its 5' end instead.
+            let start2 = if reverse_complement_segment2 {
+                0
+            } else {
+                len2 - overlap_len
+            };
+            return Some(((0, overlap_len), (start2, overlap_len)));
+        }
         let (start1, start2_processed) = if offset >= 0 {
             (offset as usize, 0)
         } else {
@@ -101,7 +136,7 @@ impl TrimToOverlap {
         } else {
             start2_processed
         };
-        ((start1, overlap_len), (start2, overlap_len))
+        Some(((start1, overlap_len), (start2, overlap_len)))
     }
 }
 
@@ -138,8 +173,9 @@ impl Step for TrimToOverlap {
                 // Trimming both reads to that would be nonsense.
                 overlap
                     .filter(|(_offset, overlap_len)| *overlap_len >= self.min_overlap)
-                    .map(|(offset, overlap_len)| {
+                    .and_then(|(offset, overlap_len)| {
                         Self::windows(
+                            self.trim_mode,
                             read2.seq.len(),
                             offset,
                             overlap_len,
@@ -178,15 +214,34 @@ mod tests {
     #[test]
     fn windows_forward_offset() {
         // read1 = insert[0..10], rc(read2) = insert[4..14] -> overlap insert[4..10]
-        assert_eq!(TrimToOverlap::windows(10, 4, 6, true), ((4, 6), (4, 6)));
+        let w = |rc| TrimToOverlap::windows(TrimMode::AnyOverlap, 10, 4, 6, rc);
+        assert_eq!(w(true), Some(((4, 6), (4, 6))));
         // without rc, read2 itself starts at the overlap
-        assert_eq!(TrimToOverlap::windows(10, 4, 6, false), ((4, 6), (0, 6)));
+        assert_eq!(w(false), Some(((4, 6), (0, 6))));
+        // no read-through, fastp would not trim
+        assert_eq!(
+            TrimToOverlap::windows(TrimMode::ReadThrough, 10, 4, 6, true),
+            None
+        );
     }
 
     #[test]
     fn windows_negative_offset() {
         // read-through: read1 = insert(6) + adapter(4), rc(read2) = adapter'(4) + insert(6)
-        assert_eq!(TrimToOverlap::windows(10, -4, 6, true), ((0, 6), (0, 6)));
-        assert_eq!(TrimToOverlap::windows(10, -4, 6, false), ((0, 6), (4, 6)));
+        for mode in [TrimMode::AnyOverlap, TrimMode::ReadThrough] {
+            let w = |rc| TrimToOverlap::windows(mode, 10, -4, 6, rc);
+            assert_eq!(w(true), Some(((0, 6), (0, 6))));
+            assert_eq!(w(false), Some(((0, 6), (4, 6))));
+        }
+    }
+
+    #[test]
+    fn windows_read_through_short_read1() {
+        // read1 = insert[0..5], rc(read2) = adapter'(2) + insert[0..8]
+        // -> overlap insert[0..5]. The overlap in read2 is read2[3..8],
+        // fastp keeps read2's 5' end, read2[0..5]
+        let w = |mode| TrimToOverlap::windows(mode, 10, -2, 5, true);
+        assert_eq!(w(TrimMode::AnyOverlap), Some(((0, 5), (3, 5))));
+        assert_eq!(w(TrimMode::ReadThrough), Some(((0, 5), (0, 5))));
     }
 }

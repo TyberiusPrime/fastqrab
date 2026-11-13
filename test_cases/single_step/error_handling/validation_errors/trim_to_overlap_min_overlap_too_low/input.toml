@@ -5,6 +5,7 @@
 [[step]]
     action = 'TrimToOverlap'
     algorithm = 'Fastp'
+    trim_mode = 'AnyOverlap'
     min_overlap = 4
     max_mismatch_rate = 0.2
     max_mismatch_count = 5

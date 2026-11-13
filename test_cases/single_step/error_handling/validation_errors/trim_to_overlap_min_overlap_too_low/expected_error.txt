@@ -9,7 +9,8 @@ Error 1/1
   ┆                     ╰──────── In this step
   ┆
 7 │     algorithm = 'Fastp'
-8 │     min_overlap = 4
+8 │     trim_mode = 'AnyOverlap'
+9 │     min_overlap = 4
   ┆                   ┬
   ┆                   │
   ┆                   ╰─ Invalid value. Must be >= 5

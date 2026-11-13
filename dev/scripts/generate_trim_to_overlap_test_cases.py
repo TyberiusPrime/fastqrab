@@ -11,6 +11,10 @@ the construction (insert coordinates), independent of the implementation:
     read2 covers insert[max(0, I - L2) : I]      (reverse complemented, + adapter if I < L2)
     overlap     = insert[max(0, I - L2) : min(I, L1)]
 
+trim_mode = 'ReadThrough' (fastp) only trims pairs that read into adapter
+(I < L2, read2 starting before read1), and then keeps the first `overlap`
+bases of both reads (read2's 5' end, even if read1 ends before the insert does).
+
 Overlaps are kept clear of min_overlap (>= min_overlap + 3, or < min_overlap - 3)
 so fastp's scan boundaries don't matter. Read2 receives up to
 max_mismatch_count substitutions inside the overlap, which must be preserved.
@@ -41,7 +45,10 @@ def rand_qual(rng, n):
 
 
 def make_pair(rng):
-    """Returns (r1, q1, r2, q2, expected (r1_window, r2_window) or None)"""
+    """Returns (r1, q1, r2, q2, expected windows by trim_mode)
+
+    expected windows are (r1_window, r2_window) or None (= untrimmed)
+    """
     while True:
         l1 = rng.randint(20, 100)
         l2 = rng.randint(20, 100)
@@ -56,7 +63,7 @@ def make_pair(rng):
     r2_fwd = insert[ov_start:insert_len]  # read2 in read1 orientation
     # read2 = rc(insert end) followed by adapter
     r2 = (rc(r2_fwd) + rand_seq(rng, l2))[:l2]
-    expected = None
+    expected = {"AnyOverlap": None, "ReadThrough": None}
     if ov >= MIN_OVERLAP:
         r2 = list(r2)
         # read2 index of insert position p: rc(read2)[k] = insert[ov_start + k] for
@@ -67,7 +74,9 @@ def make_pair(rng):
             i = rng.randrange(r2_start, r2_start + ov)
             r2[i] = rng.choice([c for c in "ACGT" if c != r2[i]])
         r2 = "".join(r2)
-        expected = ((ov_start, ov), (r2_start, ov))
+        expected["AnyOverlap"] = ((ov_start, ov), (r2_start, ov))
+        if insert_len < l2:
+            expected["ReadThrough"] = ((0, ov), (0, ov))
     return r1, rand_qual(rng, l1), r2, rand_qual(rng, l2), expected
 
 
@@ -87,6 +96,7 @@ TOML = """\
 [[step]]
     action = 'TrimToOverlap'
     algorithm = 'Fastp'
+    trim_mode = '{trim_mode}'
     min_overlap = {min_overlap}
     max_mismatch_rate = 0.2
     max_mismatch_count = {max_mismatch_count}
@@ -107,9 +117,10 @@ TOML = """\
 """
 
 
-def generate(name, seed, n, reverse_complement_segment2):
+def generate(name, seed, n, reverse_complement_segment2, trim_mode):
     rng = random.Random(seed)
     pairs = [make_pair(rng) for _ in range(n)]
+    pairs = [(r1, q1, r2, q2, exp[trim_mode]) for (r1, q1, r2, q2, exp) in pairs]
     # edge cases: empty read2, read2 shorter than min_overlap, both empty
     pairs.append(("ACGTACGTACGTACGTACGT", "I" * 20, "", "", None))
     pairs.append(("ACGTACGTACGTACGTACGT", "I" * 20, "CGTACG", "IIIIII", None))
@@ -145,14 +156,18 @@ def generate(name, seed, n, reverse_complement_segment2):
             min_overlap=MIN_OVERLAP,
             max_mismatch_count=MAX_MISMATCH_COUNT,
             rc="true" if reverse_complement_segment2 else "false",
+            trim_mode=trim_mode,
         )
     )
-    print(name, len(pairs), sum(p[4] is not None for p in pairs), "overlapping")
+    print(name, len(pairs), sum(p[4] is not None for p in pairs), "trimmed")
 
 
 def main():
-    generate("generated_revcomp", 1234, 300, True)
-    generate("generated_no_revcomp", 4321, 300, False)
+    generate("generated_revcomp", 1234, 300, True, "AnyOverlap")
+    generate("generated_no_revcomp", 4321, 300, False, "AnyOverlap")
+    # same reads, fastp's choice of what to trim
+    generate("generated_read_through_revcomp", 1234, 300, True, "ReadThrough")
+    generate("generated_read_through_no_revcomp", 4321, 300, False, "ReadThrough")
 
 
 if __name__ == "__main__":

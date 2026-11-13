@@ -1267,13 +1267,16 @@ Mismatches are preserved, segment2 keeps its orientation, location tags survive.
     segment2 = 'read2'             # TYPE: segment name, REQUIRED
     reverse_complement_segment2 = true  # TYPE: bool, REQUIRED (only for the overlap search)
     algorithm = 'Fastp'            # TYPE: 'Fastp', REQUIRED
+    trim_mode = 'AnyOverlap'       # TYPE: 'AnyOverlap' | 'ReadThrough', REQUIRED
     min_overlap = 30               # TYPE: usize >= 5, REQUIRED
     max_mismatch_rate = 0.2        # TYPE: float [0.0-1.0), REQUIRED
     max_mismatch_count = 5         # TYPE: usize, REQUIRED
-    out_label = 'was_trimmed'      # TYPE: string, OPTIONAL (bool tag: overlap found)
+    out_label = 'was_trimmed'      # TYPE: string, OPTIONAL (bool tag: reads were trimmed)
 ```
 
-No overlap → reads unchanged (tag false).
+`AnyOverlap`: trim whenever the reads overlap. `ReadThrough`: only trim when the reads run
+past the fragment end into adapter (fastp's overlap-based adapter trimming).
+Not trimmed → reads unchanged (tag false).
 
 ### Swap 
 

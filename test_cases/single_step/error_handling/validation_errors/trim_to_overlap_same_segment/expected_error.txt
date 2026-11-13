@@ -9,15 +9,16 @@ Error 1/1
    ┆                     ╰──────── In this step
    ┆
  7 │     algorithm = 'Fastp'
- 8 │     min_overlap = 10
- 9 │     max_mismatch_rate = 0.2
-10 │     max_mismatch_count = 5
-11 │     reverse_complement_segment2 = true
-12 │     segment1 = 'read1'
+ 8 │     trim_mode = 'AnyOverlap'
+ 9 │     min_overlap = 10
+10 │     max_mismatch_rate = 0.2
+11 │     max_mismatch_count = 5
+12 │     reverse_complement_segment2 = true
+13 │     segment1 = 'read1'
    ┆                ───┬───
    ┆                   │
    ┆                   ╰──── Must be different from segment2
-13 │     segment2 = 'read1'
+14 │     segment2 = 'read1'
    ┆                ───┬───
    ┆                   │
    ┆                   ╰──── Must be different from segment1

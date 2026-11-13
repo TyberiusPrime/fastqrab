@@ -877,10 +877,13 @@
 #    segment1 = "read1"                    # First segment (suggested: "read1")
 #    segment2 = "read2"                    # Second segment (suggested: "read2")
 #    algorithm = "Fastp"                   # Overlap detection, as in MergeReads
+#    trim_mode = "AnyOverlap"              # "AnyOverlap": trim to any overlap
+#                                          # "ReadThrough": only trim reads running into adapter
+#                                          #   (fragment shorter than the reads), like fastp
 #    min_overlap = 30                      # Minimum overlap length required (suggested: 30)
 #    max_mismatch_rate = 0.2               # Maximum allowed mismatch rate 0.0-1.0 (suggested: 0.2)
 #    max_mismatch_count = 5                # Maximum allowed absolute mismatches (suggested: 5)
-##    out_label = "was_trimmed"            # (optional) bool tag: true if an overlap was found
+##    out_label = "was_trimmed"            # (optional) bool tag: true if the reads were trimmed
 ##
 ## No overlap (or one shorter than min_overlap): both reads are left unchanged.
 
