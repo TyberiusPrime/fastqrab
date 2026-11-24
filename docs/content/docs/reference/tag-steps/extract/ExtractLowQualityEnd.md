@@ -1,4 +1,4 @@
-# TrimQualityEnd
+# ExctractLowQualityEnd
 
 
 ```toml
